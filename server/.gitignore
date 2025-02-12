@@ -20,6 +20,7 @@ wheels/
 .installed.cfg
 *.egg
 
+
 # Virtual Environment
 venv/
 ENV/
@@ -45,3 +46,7 @@ staticfiles/
 
 # Redis
 dump.rdb
+
+
+# Others
+.api

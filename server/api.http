@@ -1,8 +1,14 @@
-@baseUrl = http://localhost:8000/api
+### API Configuration
+@baseUrl = http://localhost:8000
 @authToken = your_jwt_token_here
 
+################################
+### Authentication Endpoints ###
+################################
+
 ### Get JWT Token
-POST {{baseUrl}}/token/
+# @name login
+POST {{baseUrl}}/api/token/
 Content-Type: application/json
 
 {
@@ -10,19 +16,25 @@ Content-Type: application/json
     "password": "your_password"
 }
 
-### Refresh Token
-POST {{baseUrl}}/token/refresh/
+### Refresh JWT Token
+POST {{baseUrl}}/api/token/refresh/
 Content-Type: application/json
 
 {
     "refresh": "your_refresh_token_here"
 }
 
+################################
+### News Module Endpoints ###
+################################
+
 ### Get News Articles List
+# Returns paginated list of news articles
 GET {{baseUrl}}/news/
 Authorization: Bearer {{authToken}}
 
 ### Get Single News Article
+# Returns detailed information about a specific article
 GET {{baseUrl}}/news/1/
 Authorization: Bearer {{authToken}}
 
@@ -64,14 +76,102 @@ Authorization: Bearer {{authToken}}
 GET {{baseUrl}}/news/?search=test
 Authorization: Bearer {{authToken}}
 
-### Filter by Category
+### Filter News by Category
 GET {{baseUrl}}/news/?category__slug=technology
 Authorization: Bearer {{authToken}}
 
-### Filter by Author
+### Filter News by Author
 GET {{baseUrl}}/news/?author__username=admin
 Authorization: Bearer {{authToken}}
 
-### Order by Published Date
+### Order News by Published Date
 GET {{baseUrl}}/news/?ordering=-published_date
+Authorization: Bearer {{authToken}}
+
+################################
+### Projects Module Endpoints ###
+################################
+
+### Get Projects List
+GET {{baseUrl}}/projects/projects/
+Authorization: Bearer {{authToken}}
+
+### Get Single Project
+GET {{baseUrl}}/projects/projects/1/
+Authorization: Bearer {{authToken}}
+
+### Filter Projects by Category
+GET {{baseUrl}}/projects/projects/?category__slug=web-development
+Authorization: Bearer {{authToken}}
+
+### Search Projects
+GET {{baseUrl}}/projects/projects/?search=react
+Authorization: Bearer {{authToken}}
+
+################################
+### About Module Endpoints ###
+################################
+
+### Get Team Members List
+GET {{baseUrl}}/about/team/
+Authorization: Bearer {{authToken}}
+
+### Get Impact Metrics
+GET {{baseUrl}}/about/impact/
+Authorization: Bearer {{authToken}}
+
+### Submit Contact Form
+POST {{baseUrl}}/about/contact/
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "subject": "General Inquiry",
+    "message": "This is a test contact submission."
+}
+
+################################
+### Career Module Endpoints ###
+################################
+
+### Get Roadmap Items
+GET {{baseUrl}}/career/roadmap/
+Authorization: Bearer {{authToken}}
+
+### Get Job Listings
+GET {{baseUrl}}/career/jobs/
+Authorization: Bearer {{authToken}}
+
+### Get Career Resources
+GET {{baseUrl}}/career/resources/
+Authorization: Bearer {{authToken}}
+
+################################
+### Events Module Endpoints ###
+################################
+
+### Get Events List
+GET {{baseUrl}}/events/
+Authorization: Bearer {{authToken}}
+
+### Filter Events by Category
+GET {{baseUrl}}/events/?category=workshops
+Authorization: Bearer {{authToken}}
+
+### Search Events
+GET {{baseUrl}}/events/?search=workshop
+Authorization: Bearer {{authToken}}
+
+################################
+### API Documentation ###
+################################
+
+### Swagger UI Documentation
+GET {{baseUrl}}/swagger/
+Authorization: Bearer {{authToken}}
+
+### ReDoc Documentation
+GET {{baseUrl}}/redoc/
 Authorization: Bearer {{authToken}}
