@@ -93,7 +93,7 @@ Authorization: Bearer {{authToken}}
 ################################
 
 ### Get Projects List
-GET {{baseUrl}}/projects/projects/
+GET {{baseUrl}}/api/projects/
 Authorization: Bearer {{authToken}}
 
 ### Get Single Project
