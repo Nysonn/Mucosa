@@ -59,8 +59,7 @@ INSTALLED_APPS = [
     'apps.career',
     'apps.projects',
     'apps.events',
-    
-    
+    'apps.partners',
 ]
 
 MIDDLEWARE = [
@@ -140,7 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Kampala'
 
 USE_I18N = True
 

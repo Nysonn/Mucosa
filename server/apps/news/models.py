@@ -72,8 +72,10 @@ class NewsArticle(TimeStampedModel):
 
     author = models.ForeignKey(Author, on_delete=models.CASCADE,
                                related_name='articles')
+    
+    # Deleted flag and timestamp for soft delete
     deleted = models.BooleanField(default=False, db_index=True)
-
+    deleted_at = models.DateTimeField(blank=True, null=True)
     # Used the custom manager so that filtering for
     # non-deleted articles is easy.
     objects = NewsArticleQuerySet.as_manager()
@@ -95,8 +97,10 @@ class NewsArticle(TimeStampedModel):
         super(NewsArticle, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+        # Soft delete: mark the article as deleted and record the deletion time.
+        self.deleted = True
         self.deleted_at = timezone.now()
-        self.save()
+        self.save(update_fields=['deleted', 'deleted_at'])
 
     def __str__(self):
         return f"{self.title} ({self.published_date.strftime('%Y-%m-%d')})"

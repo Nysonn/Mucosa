@@ -1,4 +1,3 @@
-# your_app_name/admin.py
 from django.contrib import admin
 from .models import Author, Category, NewsArticle
 
@@ -17,8 +16,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(NewsArticle)
 class NewsArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'author', 'published_date',
-                    'deleted_at')
-    list_filter = ('category', 'author', 'published_date')
+    list_display = ('title', 'category', 'author', 'published_date', 'deleted_at', 'deleted')
+    list_filter = ('category', 'author', 'published_date', 'deleted')
     search_fields = ('title', 'content')
     prepopulated_fields = {'slug': ('title',)}
+    readonly_fields = ('deleted_at', 'deleted')

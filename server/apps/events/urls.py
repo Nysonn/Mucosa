@@ -17,6 +17,7 @@ schema_view = get_schema_view(
       description="API documentation for the Events service.",
    ),
    public=True,
+   patterns=router.urls,
    permission_classes=(permissions.AllowAny,),
 )
 

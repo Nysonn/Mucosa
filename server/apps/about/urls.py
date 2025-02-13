@@ -12,6 +12,7 @@ from .views import (
 
 # About API endpoints
 router = DefaultRouter()
+
 router.register(r'team', TeamMemberListAPIView, basename='team-member-list'),
 router.register(r'impact', ImpactMetricListAPIView, basename='impact-metric-list'),
 router.register(r'contact', ContactSubmissionCreateAPIView, basename='contact-submission-create'),
@@ -28,6 +29,7 @@ schema_view = get_schema_view(
         license=openapi.License(name="BSD License"),
     ),
     public=True,
+    patterns=router.urls,
     permission_classes=(permissions.AllowAny,),
 )
 

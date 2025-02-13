@@ -37,3 +37,4 @@ class NewsArticleSerializer(serializers.ModelSerializer):
             'deleted_at',
             'deleted',
         ]
+        read_only_fields = ('deleted_at', 'deleted')
