@@ -4,6 +4,7 @@ from rest_framework import status
 from .models import Event, Organizer
 from datetime import date
 
+
 class EventAPITestCase(APITestCase):
     def setUp(self):
         organizer = Organizer.objects.create(
@@ -20,7 +21,7 @@ class EventAPITestCase(APITestCase):
             is_registration_open=True,
             organizer=organizer
         )
-    
+
     def test_event_list(self):
         url = reverse('event-list')
         response = self.client.get(url)

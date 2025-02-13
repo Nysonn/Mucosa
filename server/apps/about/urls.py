@@ -10,11 +10,11 @@ from .views import (
     ContactSubmissionCreateAPIView
 )
 
-    # About API endpoints
+# About API endpoints
 router = DefaultRouter()
-router.register(r'team', TeamMemberListAPIView.as_view(), basename='team-member-list'),
-router.register(r'impact', ImpactMetricListAPIView.as_view(), basename='impact-metric-list'),
-router.register(r'contact', ContactSubmissionCreateAPIView.as_view(), basename='contact-submission-create'),
+router.register(r'team', TeamMemberListAPIView, basename='team-member-list'),
+router.register(r'impact', ImpactMetricListAPIView, basename='impact-metric-list'),
+router.register(r'contact', ContactSubmissionCreateAPIView, basename='contact-submission-create'),
     
 
 schema_view = get_schema_view(
@@ -32,7 +32,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-
+    *router.urls,  # Include all routes from the router
     # Swagger UI documentation endpoint
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     # ReDoc documentation endpoint for an alternative view

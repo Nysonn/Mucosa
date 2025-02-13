@@ -1,20 +1,30 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import RoadmapItem, Job, Resource
-from .serializers import RoadmapItemSerializer, JobSerializer, ResourceSerializer
+from .serializers import (
+        RoadmapItemSerializer,
+        JobSerializer,
+        ResourceSerializer
+)
+
 
 class RoadmapItemViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows roadmap items to be viewed.
-    Supports filtering by category slug, search by title/description, and ordering.
+    Supports filtering by category slug, search by title/description,
+    and ordering.
     """
-    queryset = RoadmapItem.objects.select_related('category').prefetch_related('skills').all()
+    queryset = RoadmapItem.objects.select_related('category').prefetch_related(
+        'skills'
+        ).all()
     serializer_class = RoadmapItemSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter,
+                       filters.OrderingFilter]
     filterset_fields = ['category__slug']
     search_fields = ['title', 'description']
     ordering_fields = ['created_at', 'title']
     ordering = ['category__name', 'title']
+
 
 class JobViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -27,6 +37,7 @@ class JobViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['title', 'company', 'description']
     ordering_fields = ['created_at', 'title']
     ordering = ['-created_at']
+
 
 class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
     """

@@ -1,9 +1,11 @@
 from django.contrib import admin
 from .models import TeamMember, SocialLink, ImpactMetric, ContactSubmission
 
+
 class SocialLinkInline(admin.TabularInline):
     model = SocialLink
     extra = 1
+
 
 @admin.register(TeamMember)
 class TeamMemberAdmin(admin.ModelAdmin):
@@ -11,9 +13,11 @@ class TeamMemberAdmin(admin.ModelAdmin):
     search_fields = ('name', 'role')
     inlines = [SocialLinkInline]
 
+
 @admin.register(ImpactMetric)
 class ImpactMetricAdmin(admin.ModelAdmin):
     list_display = ('label', 'number')
+
 
 @admin.register(ContactSubmission)
 class ContactSubmissionAdmin(admin.ModelAdmin):
@@ -21,7 +25,8 @@ class ContactSubmissionAdmin(admin.ModelAdmin):
     readonly_fields = ('name', 'email', 'subject', 'message', 'created_at')
 
     def has_change_permission(self, request, obj=None):
-        # Disable editing of contact submissions – they are created via the frontend.
+        # Disable editing of contact submissions – they are created via the
+        # frontend.
         return False
 
     def has_add_permission(self, request):

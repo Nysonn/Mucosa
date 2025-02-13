@@ -1,17 +1,20 @@
 from django.contrib import admin
 from .models import Project, Category, Technology
 
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     prepopulated_fields = {"slug": ("name",)}
     search_fields = ('name',)
 
+
 @admin.register(Technology)
 class TechnologyAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     prepopulated_fields = {"slug": ("name",)}
     search_fields = ('name',)
+
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):

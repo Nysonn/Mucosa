@@ -1,4 +1,3 @@
-# your_app_name/views.py
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from rest_framework import viewsets, filters
@@ -7,12 +6,15 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import NewsArticle
 from .serializers import NewsArticleSerializer
 
+
 @method_decorator(cache_page(60 * 15), name='dispatch')
 class NewsArticleViewSet(viewsets.ModelViewSet):
-    queryset = NewsArticle.objects.published().select_related('author', 'category')
+    queryset = NewsArticle.objects.published().select_related('author',
+                                                              'category')
     serializer_class = NewsArticleSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter,
+                       filters.OrderingFilter]
     filterset_fields = ['category__slug', 'author__username']
     search_fields = ['title', 'excerpt', 'content']
     ordering_fields = ['published_date', 'title']

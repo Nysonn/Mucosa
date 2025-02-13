@@ -3,6 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Project
 from .serializers import ProjectSerializer
 
+
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     """
     A viewset that provides the standard read-only actions
@@ -11,7 +12,8 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Project.objects.select_related('category').prefetch_related('technologies').all()
     serializer_class = ProjectSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter,
+                       filters.OrderingFilter]
     filterset_fields = ['category__slug']
     search_fields = ['title', 'description']
     ordering_fields = ['created_at', 'title']

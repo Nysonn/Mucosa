@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 
+
 # Skill used in Roadmap items
 class Skill(models.Model):
     name = models.CharField(max_length=100, unique=True, db_index=True)
@@ -48,7 +49,9 @@ class RoadmapItem(models.Model):
     title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     icon_url = models.URLField(max_length=500)
-    skills = models.ManyToManyField(Skill, related_name='roadmap_items', blank=True)
+    skills = models.ManyToManyField(Skill,
+                                    related_name='roadmap_items',
+                                    blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -72,11 +75,14 @@ EMPLOYMENT_TYPE_CHOICES = (
     ('internship', 'Internship'),
 )
 
+
 class Job(models.Model):
     title = models.CharField(max_length=255, db_index=True)
     company = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
-    employment_type = models.CharField(max_length=50, choices=EMPLOYMENT_TYPE_CHOICES, default='full_time')
+    employment_type = models.CharField(max_length=50,
+                                       choices=EMPLOYMENT_TYPE_CHOICES,
+                                       default='full_time')
     description = models.TextField()
     # Using JSONField to store list of requirements (PostgreSQL JSON field)
     requirements = models.JSONField(default=list, blank=True)

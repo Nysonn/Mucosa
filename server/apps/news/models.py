@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.contrib.postgres.indexes import GinIndex
 from django.contrib.auth.models import AbstractUser
 
+
 # Abstract base class for common timestamp fields
 class TimeStampedModel(models.Model):
     created_at = models.DateTimeField(default=timezone.now, db_index=True)
@@ -13,6 +14,7 @@ class TimeStampedModel(models.Model):
     class Meta:
         abstract = True
 
+
 # Author model based on AbstractUser for authentication and extra profile data
 class Author(AbstractUser):
     avatar = models.URLField(max_length=255, blank=True, null=True)
@@ -20,6 +22,7 @@ class Author(AbstractUser):
 
     def __str__(self):
         return self.username
+
 
 # Category model to normalize article categories
 class Category(models.Model):
@@ -38,6 +41,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+
 # Custom QuerySet for NewsArticle to filter published articles
 class NewsArticleQuerySet(models.QuerySet):
     def published(self):
@@ -46,15 +50,18 @@ class NewsArticleQuerySet(models.QuerySet):
             published_date__lte=timezone.now()
         ).select_related('author', 'category')
 
+
 # Main NewsArticle model
 class NewsArticle(TimeStampedModel):
     title = models.CharField(max_length=255, db_index=True, unique=True)
-    slug = models.SlugField(max_length=255, unique=True, blank=True, db_index=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True,
+                            db_index=True)
     excerpt = models.TextField()
     content = models.TextField()
 
     # Use a ForeignKey to Category for normalization
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='articles')
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL,
+                                 null=True, related_name='articles')
 
     # Renamed for clarity and indexed for performance
     published_date = models.DateTimeField(default=timezone.now, db_index=True)
@@ -63,10 +70,12 @@ class NewsArticle(TimeStampedModel):
     image_caption = models.CharField(max_length=255, blank=True, null=True)
     image_credit = models.CharField(max_length=255, blank=True, null=True)
 
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='articles')
+    author = models.ForeignKey(Author, on_delete=models.CASCADE,
+                               related_name='articles')
     deleted = models.BooleanField(default=False, db_index=True)
 
-    # Use the custom manager so that filtering for non-deleted articles is easy.
+    # Used the custom manager so that filtering for
+    # non-deleted articles is easy.
     objects = NewsArticleQuerySet.as_manager()
 
     class Meta:
@@ -75,7 +84,8 @@ class NewsArticle(TimeStampedModel):
             models.Index(fields=['published_date']),
             models.Index(fields=['slug']),
             models.Index(fields=['title']),
-            GinIndex(fields=['content'], opclasses=['gin_trgm_ops'], name='newsarticle_content_gin_idx'),
+            GinIndex(fields=['content'], opclasses=['gin_trgm_ops'],
+                     name='newsarticle_content_gin_idx'),
 
         ]
 

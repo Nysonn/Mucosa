@@ -1,11 +1,12 @@
-from django.urls import path, include
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from .views import ProjectViewSet
 
-# Register the Project viewset with the router to automatically generate endpoints.
+# Register the Project viewset with the router to automatically
+# generate endpoints.
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet, basename='project')
 
@@ -23,7 +24,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    # path('api/', include(router.urls)),
+    *router.urls,  # Include all routes from the router
     # Swagger UI documentation endpoint
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     # ReDoc documentation endpoint

@@ -3,9 +3,11 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from .models import Author, NewsArticle
 
+
 class NewsArticleAPITests(APITestCase):
     def setUp(self):
-        self.author = Author.objects.create(name="Test Author", avatar="https://drive.google.com/file/d/1irl8D6tGm9QIUKk20KqED6yQOmFyYzrx/view")
+        self.author = Author.objects.create(name="Test Author",
+                                            avatar="https://drive.google.com/file/d/1irl8D6tGm9QIUKk20KqED6yQOmFyYzrx/view")
         self.article = NewsArticle.objects.create(
             title="Test Article",
             excerpt="Test excerpt",

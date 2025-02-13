@@ -3,9 +3,12 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from .models import RoadmapCategory, RoadmapItem, Job, Resource, Skill
 
+
 class RoadmapItemAPITest(APITestCase):
     def setUp(self):
-        self.category = RoadmapCategory.objects.create(name="Software Development")
+        self.category = RoadmapCategory.objects.create(
+                                        name="Software Development"
+                                                        )
         self.skill = Skill.objects.create(name="React")
         self.roadmap_item = RoadmapItem.objects.create(
             category=self.category,
@@ -20,6 +23,7 @@ class RoadmapItemAPITest(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreater(len(response.data), 0)
+
 
 class JobAPITest(APITestCase):
     def setUp(self):
@@ -38,6 +42,7 @@ class JobAPITest(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreater(len(response.data), 0)
+
 
 class ResourceAPITest(APITestCase):
     def setUp(self):

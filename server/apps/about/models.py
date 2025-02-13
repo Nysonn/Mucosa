@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class TeamMember(models.Model):
     name = models.CharField(max_length=255, db_index=True)
     role = models.CharField(max_length=255)

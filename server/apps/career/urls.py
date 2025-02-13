@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -16,7 +16,9 @@ schema_view = get_schema_view(
     openapi.Info(
         title="Career API",
         default_version='v1',
-        description="API documentation for the Career app endpoints. This includes roadmap items, job postings, and career resources.",
+        description="API documentation for the Career app endpoints. "
+                    "This includes roadmap items, job postings, and career "
+                    "resources.",
         terms_of_service="https://www.example.com/terms/",
         contact=openapi.Contact(email="contact@example.com"),
         license=openapi.License(name="BSD License"),
@@ -26,7 +28,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    # path('api/', include(router.urls)),
+    *router.urls,  # Include all routes from the router
     # Swagger UI documentation endpoint
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     # ReDoc documentation endpoint

@@ -1,2 +1,5 @@
 [flake8]
-max-line-length = 130 # default is 79
+ignore = E501
+Flake8(E302)
+# Or, alternatively, change the limit:
+# max-line-length = 120

@@ -1,15 +1,18 @@
 from rest_framework import serializers
 from .models import NewsArticle, Author, Category
 
+
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ['id', 'username', 'email', 'avatar', 'role']
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'slug']
+
 
 class NewsArticleSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(read_only=True)
