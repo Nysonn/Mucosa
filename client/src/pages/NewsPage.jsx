@@ -6,33 +6,29 @@ import useNews from '../hooks/useNews';
 import { highlightText } from '../utils/highlightText';
 
 // Filter Component for News
-// function NewsFilter({ categories, activeCategory, onCategoryChange }) {
-//   return (
-//     <div className={styles.filterSection}>
-//       <button
-//         className={`${styles.filterButton} ${!activeCategory ? styles.active : ''}`}
-//         onClick={() => onCategoryChange(null)}
-//         aria-label="Show all news categories"
-//       >
-//         All
-//       </button>
-//       {categories.length > 0 ? (
-//         categories.map((category) => (
-//           <button
-//             key={category}
-//             className={`${styles.filterButton} ${activeCategory === category ? styles.active : ''}`}
-//             onClick={() => onCategoryChange(category)}
-//             aria-label={`Filter by ${category}`}
-//           >
-//             {category}
-//           </button>
-//         ))
-//       ) : (
-//         <p className={styles.noCategories}>No categories available.</p>
-//       )}
-//     </div>
-//   );
-// }
+function NewsFilter({ categories, activeCategory, onCategoryChange }) {
+  return (
+    <div className={styles.filterSection}>
+      {categories.length > 0 ? (
+        categories.map((category) => (
+          <button
+            key={category}
+            className={`${styles.filterButton} ${
+              activeCategory === category ? styles.active : ''
+            }`}
+            onClick={() => onCategoryChange(category)}
+            aria-label={`Filter by ${category}`}
+          >
+            {category}
+          </button>
+        ))
+      ) : (
+        <p className={styles.noCategories}>No categories available.</p>
+      )}
+    </div>
+  );
+}
+
 
 // News Card Component
 function NewsCard({ image, category, title, excerpt, date, author, searchQuery }) {
