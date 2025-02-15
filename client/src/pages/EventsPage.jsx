@@ -55,7 +55,7 @@ function EventCard({
             </a>
           ) : (
             // Fallback if registrationLink is not provided
-            <PrimaryButton disabled>Registration Link Not Available</PrimaryButton>
+            <PrimaryButton disabled>Registration not open yet</PrimaryButton>
           )
         ) : (
           <PrimaryButton disabled>Registration Closed</PrimaryButton>
