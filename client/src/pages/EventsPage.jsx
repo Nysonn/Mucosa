@@ -34,14 +34,6 @@ function EventCard({
             <i className="fas fa-map-marker-alt"></i>
             {location}
           </div>
-          {/* <div className={styles.organizer}>
-            <img 
-              src={organizer.avatar} 
-              alt={organizer.name} 
-              className={styles.organizerAvatar} 
-            />
-            <span>{organizer.name}</span>
-          </div> */}
         </div>
         <p className={styles.description}>
           {highlightText(description, searchQuery)}
