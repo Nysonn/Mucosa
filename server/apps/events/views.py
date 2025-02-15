@@ -2,7 +2,9 @@ from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Event
 from .serializers import EventSerializer
+from rest_framework.response import Response
 # from rest_framework import viewsets, mixins
+from rest_framework.views import APIView
 
 
 class EventListAPIView(viewsets.ReadOnlyModelViewSet):
@@ -15,3 +17,12 @@ class EventListAPIView(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['category']
     search_fields = ['title', 'description']
+    
+    
+class CategoryListAPIView(APIView):
+    """
+    API endpoint to list event categories as a simple array of strings.
+    """
+    def get(self, request):
+        categories = ['all'] + [choice[0] for choice in Event.CATEGORY_CHOICES]
+        return Response(categories)

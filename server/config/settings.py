@@ -77,6 +77,7 @@ MIDDLEWARE = [
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [
     os.environ.get('CORS_ALLOWED_ORIGIN', 'http://localhost:5173'),
+    "http://localhost:5500",
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -181,8 +182,8 @@ REST_FRAMEWORK = {
          'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-         'anon': '100/day',
-         'user': '1000/day'
+         'anon': '100000000/day',
+         'user': '100000000/day'
     },
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }

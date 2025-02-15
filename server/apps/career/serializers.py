@@ -9,30 +9,64 @@ class SkillSerializer(serializers.ModelSerializer):
 
 
 class RoadmapCategorySerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = RoadmapCategory
-        fields = ('id', 'name', 'slug')
+        fields = (
+            'id',
+            'name',
+            'slug'
+            )
 
 
 class RoadmapItemSerializer(serializers.ModelSerializer):
     category = RoadmapCategorySerializer(read_only=True)
-    skills = SkillSerializer(many=True, read_only=True)
+
+    icon = serializers.URLField(source='icon_url')
+
+    # skills = SkillSerializer(many=True, read_only=True)
+    skills = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
 
     class Meta:
         model = RoadmapItem
-        fields = ('id', 'title', 'description', 'icon_url', 'category',
-                  'skills', 'created_at')
+        fields = (
+            # "id",
+            "title",
+            "description",
+            "icon",
+            # "category",
+            "skills",
+            # "created_at",
+        )
 
 
 class JobSerializer(serializers.ModelSerializer):
+    type = serializers.CharField(source='employment_type')
     class Meta:
         model = Job
-        fields = ('id', 'title', 'company', 'location', 'employment_type',
-                  'description', 'requirements', 'link', 'created_at')
+        fields = (
+            # 'id',
+            'title',
+            'company',
+            'location',
+            'type',
+            'description',
+            'requirements',
+            'link',
+            # 'created_at',
+            )
 
 
 class ResourceSerializer(serializers.ModelSerializer):
+    icon = serializers.URLField(source='icon_url')
+
     class Meta:
         model = Resource
-        fields = ('id', 'title', 'description', 'link', 'icon_url',
-                  'created_at')
+        fields = (
+            # 'id',
+            'title',
+            'description',
+            'icon',
+            'link',
+            # 'created_at'
+            )
