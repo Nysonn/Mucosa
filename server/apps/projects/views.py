@@ -12,12 +12,13 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     full-text search on title and description, and ordering.
     """
     queryset = Project.objects.select_related('category').prefetch_related('technologies').all()
+    pagination_class = None
     serializer_class = ProjectSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['category__slug']
-    search_fields = ['title', 'description']
-    ordering_fields = ['created_at', 'title']
-    ordering = ['-created_at']
+    # filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    # filterset_fields = ['category__slug']
+    # search_fields = ['title', 'description']
+    # ordering_fields = ['created_at', 'title']
+    # ordering = ['-created_at']
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
