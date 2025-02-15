@@ -2,7 +2,22 @@ import React from 'react';
 import styles from './ProjectsPage.module.css';
 import useProjects from '../hooks/useProjects';
 
-function ProjectCard({ title, description, image, link, tech }) {
+function highlightText(text, query) {
+  if (!query.trim()) return text;
+  
+  const regex = new RegExp(`(${query})`, 'gi');
+  const parts = text.split(regex);
+  
+  return parts.map((part, index) => 
+    regex.test(part) ? (
+      <span key={index} style={{ backgroundColor: '#ffeb3b' }}>{part}</span>
+    ) : (
+      part
+    )
+  );
+}
+
+function ProjectCard({ title, description, image, link, tech, searchQuery }) {
   return (
     <div className={styles.projectCard}>
       <div className={styles.imageContainer}>
@@ -24,8 +39,12 @@ function ProjectCard({ title, description, image, link, tech }) {
         </div>
       </div>
       <div className={styles.content}>
-        <h3 className={styles.projectTitle}>{title}</h3>
-        <p className={styles.projectDescription}>{description}</p>
+        <h3 className={styles.projectTitle}>
+          {highlightText(title, searchQuery)}
+        </h3>
+        <p className={styles.projectDescription}>
+          {highlightText(description, searchQuery)}
+        </p>
         <div className={styles.techStack}>
           {tech.map((item, index) => (
             <span key={index} className={styles.techItem}>
@@ -96,7 +115,11 @@ export default function ProjectsPage() {
           <div className={styles.projectsGrid}>
             {projects.length > 0 ? (
               projects.map((project, index) => (
-                <ProjectCard key={index} {...project} />
+                <ProjectCard 
+                  key={index} 
+                  {...project} 
+                  searchQuery={searchQuery}
+                />
               ))
             ) : (
               <div className={styles.noResults}>
