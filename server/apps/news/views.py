@@ -10,6 +10,10 @@ from .serializers import NewsArticleSerializer, NewsArticleDetailSerializer
 
 @method_decorator(cache_page(60 * 15), name='dispatch')
 class NewsArticleViewSet(viewsets.ModelViewSet):
+
+    lookup_field = 'title'
+    lookup_url_kwarg = 'newsTitle'
+
     queryset = NewsArticle.objects.published().select_related('author', 'category')
     pagination_class = None
     serializer_class = NewsArticleSerializer
