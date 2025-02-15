@@ -10,7 +10,7 @@ function highlightText(text, query) {
   
   return parts.map((part, index) => 
     regex.test(part) ? (
-      <span key={index} style={{ backgroundColor: '#ffeb3b' }}>{part}</span>
+      <span key={index} style={{ backgroundColor: '#a1e619' }}>{part}</span>
     ) : (
       part
     )
