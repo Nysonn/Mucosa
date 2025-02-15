@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import styles from './ProjectsPage.module.css';
+import useProjects from '../hooks/useProjects';
 
 function ProjectCard({ title, description, image, link, tech }) {
   return (
@@ -38,81 +39,17 @@ function ProjectCard({ title, description, image, link, tech }) {
 }
 
 export default function ProjectsPage() {
-  // State for project data and filtering
-  const [allProjects, setAllProjects] = useState([]); // Holds the complete list
-  const [projects, setProjects] = useState([]); // Holds the filtered list
-  const [categories, setCategories] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // FETCH CATEGORIES FROM THE BACKEND
-  useEffect(() => {
-    fetch('http://localhost:8000/projects/categories/')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch categories');
-        }
-        return response.json();
-      })
-      .then(data => {
-        // Assuming backend returns an array of category strings
-        setCategories(['all', ...data]);
-      })
-      .catch(err => {
-        console.error('Error fetching categories:', err);
-      });
-  }, []);
-
-  // FETCH ALL PROJECTS ONCE FROM THE BACKEND
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    fetch('http://localhost:8000/projects/projects/')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch projects');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setAllProjects(data);
-        setProjects(data); // Initialize with the complete list
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching projects:', err);
-        setError(err);
-        setLoading(false);
-      });
-  }, []);
-
-  // FILTER PROJECTS ON THE CLIENT SIDE
-  useEffect(() => {
-    let filteredProjects = allProjects;
-
-    // Filter by category if not "all"
-    if (activeCategory !== 'all') {
-      filteredProjects = filteredProjects.filter(
-        project => project.category === activeCategory
-      );
-    }
-
-    // Filter by search query (searching in title and description)
-    if (searchQuery.trim() !== '') {
-      filteredProjects = filteredProjects.filter(project => {
-        const lowerQuery = searchQuery.toLowerCase();
-        return (
-          project.title.toLowerCase().includes(lowerQuery) ||
-          project.description.toLowerCase().includes(lowerQuery)
-        );
-      });
-    }
-
-    setProjects(filteredProjects);
-  }, [searchQuery, activeCategory, allProjects]);
+  // Destructure the required state and functions from the custom hook
+  const {
+    projects,
+    categories,
+    searchQuery,
+    setSearchQuery,
+    activeCategory,
+    setActiveCategory,
+    loading,
+    error,
+  } = useProjects();
 
   return (
     <div className={styles.projectsPage}>
