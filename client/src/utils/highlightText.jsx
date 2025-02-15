@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * Highlights the parts of the given text that match the query.
  *
