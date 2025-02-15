@@ -1,21 +1,7 @@
 import React from 'react';
 import styles from './ProjectsPage.module.css';
 import useProjects from '../hooks/useProjects';
-
-function highlightText(text, query) {
-  if (!query.trim()) return text;
-  
-  const regex = new RegExp(`(${query})`, 'gi');
-  const parts = text.split(regex);
-  
-  return parts.map((part, index) => 
-    regex.test(part) ? (
-      <span key={index} style={{ backgroundColor: '#a1e619' }}>{part}</span>
-    ) : (
-      part
-    )
-  );
-}
+import { highlightText } from '../utils/highlightText';
 
 function ProjectCard({ title, description, image, link, tech, searchQuery }) {
   return (
