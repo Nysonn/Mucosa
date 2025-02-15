@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styles from './EventsPage.module.css';
 import useEvents from '../hooks/useEvents';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
@@ -14,6 +13,7 @@ function EventCard({
   category, 
   organizer, 
   isRegistrationOpen,
+  registrationLink,  // new property from the backend
   searchQuery  // receive searchQuery to highlight matches
 }) {
   return (
@@ -48,9 +48,15 @@ function EventCard({
           {highlightText(description, searchQuery)}
         </p>
         {isRegistrationOpen ? (
-          <Link to="/register">
-            <PrimaryButton>Register Now</PrimaryButton>
-          </Link>
+          registrationLink ? (
+            // If registrationLink exists, use an anchor tag for external links
+            <a href={registrationLink} target="_blank" rel="noopener noreferrer">
+              <PrimaryButton>Register Now</PrimaryButton>
+            </a>
+          ) : (
+            // Fallback if registrationLink is not provided
+            <PrimaryButton disabled>Registration Link Not Available</PrimaryButton>
+          )
         ) : (
           <PrimaryButton disabled>Registration Closed</PrimaryButton>
         )}
