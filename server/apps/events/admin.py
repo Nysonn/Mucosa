@@ -28,7 +28,8 @@ class EventAdmin(admin.ModelAdmin):
         'date',
         'location',
         'category',
-        'is_registration_open', 'organizer',
+        'is_registration_open',
+        # 'organizer',
         'registrationLink',
         )
     list_filter = ('category', 'is_registration_open', 'date')
@@ -47,7 +48,7 @@ class EventAdmin(admin.ModelAdmin):
                     "category",
                     "is_registration_open",
                     'registrationLink',
-                    "organizer",
+                    # "organizer",
                 )
             },
         ),
