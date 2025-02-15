@@ -1,10 +1,11 @@
-import { useState, useMemo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './NewsPage.module.css';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
-import { newsItems } from '../data/newsitems';
+import useNews from '../hooks/useNews';
+import { highlightText } from '../utils/highlightText';
 
-// Filter Component
+// Filter Component for News
 function NewsFilter({ categories, activeCategory, onCategoryChange }) {
   return (
     <div className={styles.filterSection}>
@@ -34,7 +35,8 @@ function NewsFilter({ categories, activeCategory, onCategoryChange }) {
 }
 
 // News Card Component
-function NewsCard({ image, category, title, excerpt, date, author }) {
+function NewsCard({ image, category, title, excerpt, date, author, searchQuery }) {
+  // Format title for URL-friendly slug (if needed)
   const formattedTitle = title.replace(/\s+/g, '-').toLowerCase();
 
   return (
@@ -44,8 +46,8 @@ function NewsCard({ image, category, title, excerpt, date, author }) {
         <span className={styles.category}>{category}</span>
       </div>
       <div className={styles.content}>
-        <h2 className={styles.title}>{title}</h2>
-        <p className={styles.excerpt}>{excerpt}</p>
+        <h2 className={styles.title}>{highlightText(title, searchQuery)}</h2>
+        <p className={styles.excerpt}>{highlightText(excerpt, searchQuery)}</p>
         <div className={styles.meta}>
           <div className={styles.author}>
             <img src={author.avatar} alt={author.name} className={styles.avatar} />
@@ -65,27 +67,21 @@ function NewsCard({ image, category, title, excerpt, date, author }) {
 
 // News Page Component
 function NewsPage() {
-  const [activeCategory, setActiveCategory] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const {
+    news,
+    categories,
+    activeCategory,
+    setActiveCategory,
+    searchQuery,
+    setSearchQuery,
+    loading,
+    error,
+  } = useNews();
 
-  const categories = ['Technology', 'Community', 'Events', 'Education', 'Career', 'Business', 'Entertainment'];
-
-  // Optimize filtering with useMemo
-  const filteredNews = useMemo(() => {
-    return newsItems.filter((item) => {
-      const matchesCategory = !activeCategory || item.category === activeCategory;
-      const matchesSearch =
-        !searchQuery ||
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
-    });
-  }, [activeCategory, searchQuery]);
-
-  // Handle search input with useCallback to optimize performance
+  // Optimize search input change handler with useCallback
   const handleSearchChange = useCallback((e) => {
     setSearchQuery(e.target.value);
-  }, []);
+  }, [setSearchQuery]);
 
   return (
     <div className={styles.newsPage}>
@@ -110,12 +106,22 @@ function NewsPage() {
         </div>
 
         {/* Category Filter */}
-        <NewsFilter categories={categories} activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
+        <NewsFilter
+          categories={categories}
+          activeCategory={activeCategory}
+          onCategoryChange={setActiveCategory}
+        />
 
         {/* News Articles */}
         <div className={styles.newsGrid}>
-          {filteredNews.length > 0 ? (
-            filteredNews.map((news, index) => <NewsCard key={index} {...news} />)
+          {loading ? (
+            <div className={styles.loading}>Loading news...</div>
+          ) : error ? (
+            <div className={styles.error}>Error: {error.message}</div>
+          ) : news.length > 0 ? (
+            news.map((newsItem, index) => (
+              <NewsCard key={index} {...newsItem} searchQuery={searchQuery} />
+            ))
           ) : (
             <div className={styles.noResults}>
               <p>No news articles found matching your criteria.</p>
@@ -124,7 +130,7 @@ function NewsPage() {
         </div>
 
         {/* Load More Button */}
-        {filteredNews.length > 0 && (
+        {news.length > 0 && (
           <div className={styles.loadMore}>
             <PrimaryButton>Load More Articles</PrimaryButton>
           </div>
