@@ -12,7 +12,9 @@ class EventListAPIView(viewsets.ReadOnlyModelViewSet):
     API endpoint to list events. Supports filtering by category and searching
     by title/description.
     """
-    queryset = Event.objects.select_related('organizer').all()
+    queryset = Event.objects.select_related(
+        # 'organizer'
+        ).all()
     pagination_class = None
     serializer_class = EventSerializer
     # filter_backends = [DjangoFilterBackend, filters.SearchFilter]
