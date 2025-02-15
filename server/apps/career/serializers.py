@@ -34,7 +34,7 @@ class RoadmapItemSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "icon",
-            # "category",
+            "category",
             "skills",
             # "created_at",
         )
@@ -42,6 +42,7 @@ class RoadmapItemSerializer(serializers.ModelSerializer):
 
 class JobSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source='employment_type')
+    
     class Meta:
         model = Job
         fields = (

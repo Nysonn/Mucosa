@@ -19,7 +19,7 @@ class TeamMemberListAPIView(viewsets.ReadOnlyModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
-        return Response({"teamMembers": serializer.data})
+        return Response(serializer.data)
 
 
 # List API view for impact metrics.
@@ -31,7 +31,7 @@ class ImpactMetricListAPIView(viewsets.ReadOnlyModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
-        return Response({"impactMetrics": serializer.data})
+        return Response(serializer.data)
 
 
 # Create API view for contact submissions.
