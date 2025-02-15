@@ -39,7 +39,8 @@ function ProjectCard({ title, description, image, link, tech }) {
 
 export default function ProjectsPage() {
   // State for project data and filtering
-  const [projects, setProjects] = useState([]);
+  const [allProjects, setAllProjects] = useState([]); // Holds the complete list
+  const [projects, setProjects] = useState([]); // Holds the filtered list
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
@@ -56,10 +57,7 @@ export default function ProjectsPage() {
         return response.json();
       })
       .then(data => {
-        /**
-         * Assuming that the backend returns an array of category strings,
-         * we prepend the default "all" option.
-         */
+        // Assuming backend returns an array of category strings
         setCategories(['all', ...data]);
       })
       .catch(err => {
@@ -67,21 +65,12 @@ export default function ProjectsPage() {
       });
   }, []);
 
-  // FETCH PROJECTS FROM THE BACKEND
+  // FETCH ALL PROJECTS ONCE FROM THE BACKEND
   useEffect(() => {
     setLoading(true);
     setError(null);
 
-    // Construct the URL with query parameters for filtering
-    const url = new URL('http://localhost:8000/projects/projects/');
-    if (activeCategory && activeCategory !== 'all') {
-      url.searchParams.append('category', activeCategory);
-    }
-    if (searchQuery) {
-      url.searchParams.append('search', searchQuery);
-    }
-
-    fetch(url.toString())
+    fetch('http://localhost:8000/projects/projects/')
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch projects');
@@ -89,7 +78,8 @@ export default function ProjectsPage() {
         return response.json();
       })
       .then(data => {
-        setProjects(data);
+        setAllProjects(data);
+        setProjects(data); // Initialize with the complete list
         setLoading(false);
       })
       .catch(err => {
@@ -97,7 +87,32 @@ export default function ProjectsPage() {
         setError(err);
         setLoading(false);
       });
-  }, [searchQuery, activeCategory]);
+  }, []);
+
+  // FILTER PROJECTS ON THE CLIENT SIDE
+  useEffect(() => {
+    let filteredProjects = allProjects;
+
+    // Filter by category if not "all"
+    if (activeCategory !== 'all') {
+      filteredProjects = filteredProjects.filter(
+        project => project.category === activeCategory
+      );
+    }
+
+    // Filter by search query (searching in title and description)
+    if (searchQuery.trim() !== '') {
+      filteredProjects = filteredProjects.filter(project => {
+        const lowerQuery = searchQuery.toLowerCase();
+        return (
+          project.title.toLowerCase().includes(lowerQuery) ||
+          project.description.toLowerCase().includes(lowerQuery)
+        );
+      });
+    }
+
+    setProjects(filteredProjects);
+  }, [searchQuery, activeCategory, allProjects]);
 
   // Render a loading or error message if applicable
   if (loading) {
@@ -133,7 +148,9 @@ export default function ProjectsPage() {
             {categories.map(category => (
               <button
                 key={category}
-                className={`${styles.categoryButton} ${activeCategory === category ? styles.active : ''}`}
+                className={`${styles.categoryButton} ${
+                  activeCategory === category ? styles.active : ''
+                }`}
                 onClick={() => setActiveCategory(category)}
               >
                 {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -142,7 +159,7 @@ export default function ProjectsPage() {
           </div>
         </div>
 
-        {/* Display fetched projects */}
+        {/* Display filtered projects */}
         <div className={styles.projectsGrid}>
           {projects.length > 0 ? (
             projects.map((project, index) => (
