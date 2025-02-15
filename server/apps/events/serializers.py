@@ -16,7 +16,7 @@ class EventSerializer(serializers.ModelSerializer):
     date = serializers.SerializerMethodField()
     organizer = OrganizerSerializer(read_only=True)
     isRegistrationOpen = serializers.BooleanField(source='is_registration_open')
-
+    registrationLink = serializers.URLField(required=False, allow_null=True)
     class Meta:
         model = Event
         fields = (
@@ -29,6 +29,7 @@ class EventSerializer(serializers.ModelSerializer):
             "category",
             "organizer",
             "isRegistrationOpen",
+            "registrationLink",
         )
 
     def get_date(self, obj):

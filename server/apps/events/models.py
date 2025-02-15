@@ -34,9 +34,11 @@ class Event(models.Model):
     image = models.URLField(max_length=500)
     # Use choices for standard categories. Allow blank so non-standard values
     # can be added.
+    
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES,
                                 blank=True)
     is_registration_open = models.BooleanField(default=False)
+    registrationLink = models.URLField(max_length=500, blank=True, null=True)
     organizer = models.ForeignKey(Organizer, related_name='events',
                                   on_delete=models.CASCADE)
     
