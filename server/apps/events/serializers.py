@@ -5,26 +5,30 @@ from .models import Event, Organizer
 class OrganizerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organizer
-        fields = ('id', 'name', 'avatar')
+        fields = (
+            # 'id',
+            'name',
+            'avatar')
 
 
 class EventSerializer(serializers.ModelSerializer):
     # Compute a custom date representation.
     date = serializers.SerializerMethodField()
-    organizer = OrganizerSerializer()
+    organizer = OrganizerSerializer(read_only=True)
+    isRegistrationOpen = serializers.BooleanField(source='is_registration_open')
 
     class Meta:
         model = Event
         fields = (
-            'id',
-            'title',
-            'date',
-            'location',
-            'description',
-            'image',
-            'category',
-            'is_registration_open',
-            'organizer',
+            # 'id',
+            "title",
+            "date",
+            "location",
+            "description",
+            "image",
+            "category",
+            "organizer",
+            "isRegistrationOpen",
         )
 
     def get_date(self, obj):
