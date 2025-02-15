@@ -201,6 +201,22 @@
     color: #666;
   }
   
+  .loading, .error {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--color-secondary);
+    font-size: 1.1rem;
+    grid-column: 1 / -1;  /* Spans full width of grid */
+    margin-top: var(--spacing-lg);
+  }
+  
+  .error {
+    color: #dc3545;  /* Red color for error state */
+    background: rgba(220, 53, 69, 0.1);
+    border-radius: 8px;
+    padding: var(--spacing-lg);
+  }
+  
   @media (max-width: var(--breakpoint-md)) {
     .pageTitle {
       font-size: 2rem;

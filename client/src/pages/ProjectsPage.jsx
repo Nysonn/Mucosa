@@ -114,15 +114,6 @@ export default function ProjectsPage() {
     setProjects(filteredProjects);
   }, [searchQuery, activeCategory, allProjects]);
 
-  // Render a loading or error message if applicable
-  if (loading) {
-    return <div className={styles.loading}>Loading projects...</div>;
-  }
-
-  if (error) {
-    return <div className={styles.error}>Error: {error.message}</div>;
-  }
-
   return (
     <div className={styles.projectsPage}>
       <div className={styles.container}>
@@ -159,18 +150,24 @@ export default function ProjectsPage() {
           </div>
         </div>
 
-        {/* Display filtered projects */}
-        <div className={styles.projectsGrid}>
-          {projects.length > 0 ? (
-            projects.map((project, index) => (
-              <ProjectCard key={index} {...project} />
-            ))
-          ) : (
-            <div className={styles.noResults}>
-              <p>No projects found matching your criteria.</p>
-            </div>
-          )}
-        </div>
+        {/* Conditional rendering for loading, error, or projects */}
+        {loading ? (
+          <div className={styles.loading}>Loading projects...</div>
+        ) : error ? (
+          <div className={styles.error}>Error: {error.message}</div>
+        ) : (
+          <div className={styles.projectsGrid}>
+            {projects.length > 0 ? (
+              projects.map((project, index) => (
+                <ProjectCard key={index} {...project} />
+              ))
+            ) : (
+              <div className={styles.noResults}>
+                <p>No projects found matching your criteria.</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
