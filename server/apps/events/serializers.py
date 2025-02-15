@@ -27,7 +27,7 @@ class EventSerializer(serializers.ModelSerializer):
             "description",
             "image",
             "category",
-            "organizer",
+            # "organizer",
             "isRegistrationOpen",
             "registrationLink",
         )
