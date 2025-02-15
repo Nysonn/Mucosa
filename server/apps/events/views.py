@@ -25,5 +25,7 @@ class CategoryListAPIView(APIView):
     API endpoint to list event categories as a simple array of strings.
     """
     def get(self, request):
-        categories = ['all'] + [choice[0] for choice in Event.CATEGORY_CHOICES]
+            # Query the Event table for distinct non-empty category values.
+        distinct_categories = Event.objects.exclude(category="").values_list('category', flat=True).distinct()
+        categories = list(distinct_categories)
         return Response(categories)
