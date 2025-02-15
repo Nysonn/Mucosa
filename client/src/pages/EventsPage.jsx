@@ -11,7 +11,6 @@ function EventCard({
   description, 
   image, 
   category, 
-  organizer, 
   isRegistrationOpen,
   registrationLink,  // new property from the backend
   searchQuery  // receive searchQuery to highlight matches
