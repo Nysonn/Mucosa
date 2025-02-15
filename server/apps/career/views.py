@@ -18,12 +18,12 @@ class RoadmapItemViewSet(viewsets.ReadOnlyModelViewSet):
         'skills'
         ).all()
     serializer_class = RoadmapItemSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter,
-                       filters.OrderingFilter]
-    filterset_fields = ['category__slug']
-    search_fields = ['title', 'description']
-    ordering_fields = ['created_at', 'title']
-    ordering = ['category__name', 'title']
+    # filter_backends = [DjangoFilterBackend, filters.SearchFilter,
+    #                    filters.OrderingFilter]
+    # filterset_fields = ['category__slug']
+    # search_fields = ['title', 'description']
+    # ordering_fields = ['created_at', 'title']
+    # ordering = ['category__name', 'title']
 
 
 class JobViewSet(viewsets.ReadOnlyModelViewSet):
@@ -33,10 +33,11 @@ class JobViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Job.objects.all()
     serializer_class = JobSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['title', 'company', 'description']
-    ordering_fields = ['created_at', 'title']
-    ordering = ['-created_at']
+    pagination_class = None
+    # filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    # search_fields = ['title', 'company', 'description']
+    # ordering_fields = ['created_at', 'title']
+    # ordering = ['-created_at']
 
 
 class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
@@ -46,7 +47,7 @@ class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Resource.objects.all()
     serializer_class = ResourceSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['title', 'description']
-    ordering_fields = ['title']
-    ordering = ['title']
+    # filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    # search_fields = ['title', 'description']
+    # ordering_fields = ['title']
+    # ordering = ['title']

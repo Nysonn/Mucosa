@@ -13,10 +13,11 @@ class EventListAPIView(viewsets.ReadOnlyModelViewSet):
     by title/description.
     """
     queryset = Event.objects.select_related('organizer').all()
+    pagination_class = None
     serializer_class = EventSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['category']
-    search_fields = ['title', 'description']
+    # filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    # filterset_fields = ['category']
+    # search_fields = ['title', 'description']
     
     
 class CategoryListAPIView(APIView):
