@@ -1,4 +1,3 @@
-// src/components/NewsDetailPage/NewsDetailPage.js
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './NewsDetailPage.module.css';
@@ -6,7 +5,6 @@ import useNewsDetail from '../hooks/useNewsDetail';
 
 function NewsDetailPage() {
   const { newsTitle } = useParams(); 
-  // The "newsTitle" param is expected to be the slug from the URL.
   const { news, loading, error } = useNewsDetail(newsTitle);
 
   if (loading) {
@@ -21,6 +19,12 @@ function NewsDetailPage() {
     return <p className={styles.error}>Article not found!</p>;
   }
 
+  // Split the content into paragraphs based on newline characters.
+  // We filter out any empty strings that might result.
+  const contentParagraphs = news.content
+    ? news.content.split(/\r?\n/).filter(paragraph => paragraph.trim() !== "")
+    : [];
+
   return (
     <div className={styles.newsDetailPage}>
       <div className={styles.container}>
@@ -31,10 +35,15 @@ function NewsDetailPage() {
             <div className={styles.timeAndAuthor}>
               <time className={styles.time}>{news.date}</time>
               <div className={styles.authorInfo}>
-                <img src={news.author.avatar} alt={news.author.name} className={styles.avatar} />
+                <img 
+                  src={news.author.avatar || 'default-avatar.png'} 
+                  alt={news.author.username} 
+                  className={styles.avatar} 
+                />
                 <div className={styles.authorDetails}>
-                  <span className={styles.authorName}>{news.author.name}</span>
-                  {news.author.role && <span className={styles.authorRole}>{news.author.role}</span>}
+                  <span className={styles.authorName}>{news.author.username}</span>
+                  {/* Uncomment below if you expect a role property */}
+                  {/* {news.author.role && <span className={styles.authorRole}>{news.author.role}</span>} */}
                 </div>
               </div>
             </div>
@@ -52,9 +61,8 @@ function NewsDetailPage() {
         </figure>
 
         <article className={styles.content}>
-          {news.excerpt && <div className={styles.excerpt}>{news.excerpt}</div>}
-          {news.content && news.content.map((paragraph, index) => (
-            <p key={index} className={styles.paragraph}>{paragraph}</p>
+          {contentParagraphs.map((paragraph, index) => (
+            <p key={index} className={styles.excerpt}>{paragraph}</p>
           ))}
         </article>
 
