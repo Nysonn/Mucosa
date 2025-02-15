@@ -208,6 +208,10 @@
 }
 
 .noResults {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh; /* Adjust this value as needed */
   text-align: center;
   padding: var(--spacing-xl);
   color: #666;
