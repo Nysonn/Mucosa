@@ -211,6 +211,7 @@
   text-align: center;
   padding: var(--spacing-xl);
   color: #666;
+  margin: 0 auto;
 }
 
 .loading, .error {
