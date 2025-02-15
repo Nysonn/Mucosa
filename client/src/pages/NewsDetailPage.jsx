@@ -1,13 +1,21 @@
+// src/components/NewsDetailPage/NewsDetailPage.js
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './NewsDetailPage.module.css';
-import { newsItems } from '../data/newsitems';
+import useNewsDetail from '../hooks/useNewsDetail';
 
 function NewsDetailPage() {
   const { newsTitle } = useParams(); 
+  // The "newsTitle" param is expected to be the slug from the URL.
+  const { news, loading, error } = useNewsDetail(newsTitle);
 
-  // Normalize the title for comparison
-  const formattedTitle = newsTitle.replace(/-/g, ' ').toLowerCase();
-  const news = newsItems.find((item) => item.title.toLowerCase() === formattedTitle);
+  if (loading) {
+    return <p className={styles.loading}>Loading article...</p>;
+  }
+
+  if (error) {
+    return <p className={styles.error}>Error: {error.message}</p>;
+  }
 
   if (!news) {
     return <p className={styles.error}>Article not found!</p>;
@@ -19,7 +27,6 @@ function NewsDetailPage() {
         <header className={styles.header}>
           {news.category && <div className={styles.category}>{news.category}</div>}
           <h1 className={styles.title}>{news.title}</h1>
-          
           <div className={styles.meta}>
             <div className={styles.timeAndAuthor}>
               <time className={styles.time}>{news.date}</time>
