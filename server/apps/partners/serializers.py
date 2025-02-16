@@ -5,4 +5,10 @@ from .models import Partner
 class PartnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Partner
-        fields = ('id', 'name', 'slug', 'logo', 'website')
+        fields = (
+            # 'id',
+            'name',
+            # 'slug',
+            'logo',
+            'website'
+            )

@@ -80,9 +80,7 @@ class Job(models.Model):
     title = models.CharField(max_length=255, db_index=True)
     company = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
-    employment_type = models.CharField(max_length=50,
-                                       choices=EMPLOYMENT_TYPE_CHOICES,
-                                       default='full_time')
+    employment_type = models.CharField(max_length=50, choices=EMPLOYMENT_TYPE_CHOICES, default='full_time')
     description = models.TextField()
     # Using JSONField to store list of requirements (PostgreSQL JSON field)
     requirements = models.JSONField(default=list, blank=True)
