@@ -31,9 +31,6 @@ function NewsFilter({ categories, activeCategory, onCategoryChange }) {
 
 // News Card Component
 function NewsCard({ image, category, title, excerpt, date, author, searchQuery }) {
-  // Format title for URL-friendly slug
-  const formattedTitle = title.replace(/\s+/g, '-').toLowerCase();
-
   return (
     <article className={styles.newsCard}>
       <div className={styles.imageContainer}>
@@ -50,7 +47,7 @@ function NewsCard({ image, category, title, excerpt, date, author, searchQuery }
           </div>
           <span className={styles.date}>{date}</span>
         </div>
-        <Link to={`/news/${formattedTitle}`} className={styles.readMoreLink}>
+        <Link to={`/news/${title}`} className={styles.readMoreLink}>
           <button className={styles.readMore} aria-label={`Read more about ${title}`}>
             Read More
           </button>
