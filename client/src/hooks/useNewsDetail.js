@@ -1,4 +1,3 @@
-// src/hooks/useNewsDetail.js
 import { useState, useEffect } from 'react';
 
 function useNewsDetail(newsTitle) {
@@ -15,8 +14,7 @@ function useNewsDetail(newsTitle) {
     setLoading(true);
     setError(null);
 
-    // Construct the URL using the newsTitle (assumed to be a slug)
-    // Adjust the URL to match your backend endpoint
+    // Construct the URL using the newsTitle slug.
     fetch(`http://localhost:8000/news/news/${newsTitle}/`)
       .then((response) => {
         if (!response.ok) {
