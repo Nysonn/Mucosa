@@ -29,6 +29,9 @@ class NewsArticleViewSet(viewsets.ModelViewSet):
             return NewsArticleDetailSerializer
         return NewsArticleSerializer
 
+    # def perform_create(self, serializer):
+    #     # Automatically set the article's author as the logged-in user
+    #     serializer.save(author=self.request.user)
+    
     def perform_create(self, serializer):
-        # Automatically set the article's author as the logged-in user
-        serializer.save(author=self.request.user)
+        serializer.save()  # Now uses the author data from the request payload.
