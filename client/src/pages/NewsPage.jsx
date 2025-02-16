@@ -19,7 +19,7 @@ function NewsFilter({ categories, activeCategory, onCategoryChange }) {
             onClick={() => onCategoryChange(category)}
             aria-label={`Filter by ${category}`}
           >
-            {category}
+            {category.charAt(0).toUpperCase() + category.slice(1)}
           </button>
         ))
       ) : (
@@ -29,10 +29,9 @@ function NewsFilter({ categories, activeCategory, onCategoryChange }) {
   );
 }
 
-
 // News Card Component
 function NewsCard({ image, category, title, excerpt, date, author, searchQuery }) {
-  // Format title for URL-friendly slug (if needed)
+  // Format title for URL-friendly slug
   const formattedTitle = title.replace(/\s+/g, '-').toLowerCase();
 
   return (

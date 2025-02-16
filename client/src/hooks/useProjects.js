@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 
 function useProjects() {
-  const [allProjects, setAllProjects] = useState([]); // Complete list fetched from the backend
-  const [projects, setProjects] = useState([]);         // Filtered list to be displayed
-  // Initialize categories with 'all' so the default filter is available on first render
-  const [categories, setCategories] = useState(['all']); 
+  const [allProjects, setAllProjects] = useState([]); 
+  const [projects, setProjects] = useState([]); 
+  const [categories, setCategories] = useState([]); 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [loading, setLoading] = useState(true);

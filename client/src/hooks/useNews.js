@@ -1,12 +1,13 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 function useNews() {
-  const [allNews, setAllNews] = useState([]); // complete list of news from the backend
+  const [allNews, setAllNews] = useState([]); // Complete list of news articles
+  const [news, setNews] = useState([]);         // Filtered list to display
+  const [categories, setCategories] = useState([]); // Unique news categories
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const [activeCategory, setActiveCategory] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
 
   // Fetch all news articles from the backend once on mount
   useEffect(() => {
@@ -24,6 +25,7 @@ function useNews() {
       .then((data) => {
         // Assuming the backend returns an array of news articles
         setAllNews(data);
+        setNews(data);
         setLoading(false);
       })
       .catch((err) => {
@@ -34,38 +36,42 @@ function useNews() {
   }, []);
 
   // Extract unique categories from the news articles.
-  // If you already have a dedicated endpoint for categories, you can fetch those instead.
-  const categories = useMemo(() => {
-    const cats = new Set();
-    allNews.forEach((item) => {
-      if (item.category) {
-        cats.add(item.category);
-      }
-    });
-    // Prepend a default "All" option for resetting the filter.
-    return ['All', ...Array.from(cats)];
+  useEffect(() => {
+    if (allNews.length > 0) {
+      const uniqueCategories = Array.from(new Set(allNews.map((item) => item.category)));
+      // Prepend the default "all" option for resetting the filter.
+      setCategories(['all', ...uniqueCategories]);
+    }
   }, [allNews]);
 
   // Filter news based on active category and search query.
-  const filteredNews = useMemo(() => {
-    return allNews.filter((item) => {
-      const matchesCategory =
-        !activeCategory || activeCategory === 'All' || item.category === activeCategory;
-      const matchesSearch =
-        !searchQuery ||
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
-    });
-  }, [allNews, activeCategory, searchQuery]);
+  useEffect(() => {
+    let filtered = allNews;
+
+    // Filter by category if not "all"
+    if (activeCategory !== 'all') {
+      filtered = filtered.filter((item) => item.category === activeCategory);
+    }
+
+    // Filter by search query (checking title and excerpt)
+    if (searchQuery.trim() !== '') {
+      const lowerQuery = searchQuery.toLowerCase();
+      filtered = filtered.filter((item) =>
+        item.title.toLowerCase().includes(lowerQuery) ||
+        item.excerpt.toLowerCase().includes(lowerQuery)
+      );
+    }
+
+    setNews(filtered);
+  }, [searchQuery, activeCategory, allNews]);
 
   return {
-    news: filteredNews,
+    news,
     categories,
-    activeCategory,
-    setActiveCategory,
     searchQuery,
     setSearchQuery,
+    activeCategory,
+    setActiveCategory,
     loading,
     error,
   };
