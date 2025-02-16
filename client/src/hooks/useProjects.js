@@ -1,80 +1,68 @@
 import { useState, useEffect } from 'react';
 
 function useProjects() {
-  // allProjects: the complete list fetched from the backend
-  // projects: the filtered list to be displayed
-  const [allProjects, setAllProjects] = useState([]);
-  const [projects, setProjects] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [allProjects, setAllProjects] = useState([]); // Holds the complete list of projects from the backend
+  const [projects, setProjects] = useState([]);         // Holds the filtered list of projects to be displayed
+  const [categories, setCategories] = useState([]);       // Unique project categories extracted from the fetched projects
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch categories from the backend (assumed to return an array of category strings)
-  useEffect(() => {
-    fetch('http://localhost:8000/projects/categories/')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch categories');
-        }
-        return response.json();
-      })
-      .then(data => {
-        // Prepend the "all" option to the array of categories
-        setCategories(['all', ...data]);
-      })
-      .catch(err => {
-        console.error('Error fetching categories:', err);
-      });
-  }, []);
-
-  // Fetch all projects once from the backend
+  // FETCH ALL PROJECTS FROM THE BACKEND ONCE
   useEffect(() => {
     setLoading(true);
     setError(null);
 
     fetch('http://localhost:8000/projects/projects/')
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to fetch projects');
         }
         return response.json();
       })
-      .then(data => {
-        // Assume that data is returned as an array of projects
+      .then((data) => {
+        // Assume data is returned as an array of projects
         setAllProjects(data);
-        setProjects(data); // Initialize the filtered list with all projects
+        setProjects(data);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Error fetching projects:', err);
         setError(err);
         setLoading(false);
       });
   }, []);
 
-  // Filter projects on the client side based on searchQuery and activeCategory
+  // EXTRACT UNIQUE CATEGORIES FROM THE PROJECTS
   useEffect(() => {
-    let filteredProjects = allProjects;
+    if (allProjects.length > 0) {
+      // Create a Set to extract unique categories from the project list
+      const uniqueCategories = Array.from(new Set(allProjects.map(project => project.category)));
+      // Prepend the default "all" option for resetting the filter
+      setCategories(['all', ...uniqueCategories]);
+    }
+  }, [allProjects]);
 
-    // Filter by category if not "all"
+  // FILTER PROJECTS BASED ON SEARCH QUERY AND ACTIVE CATEGORY
+  useEffect(() => {
+    let filtered = allProjects;
+
+    // Filter by category if activeCategory is not "all"
     if (activeCategory !== 'all') {
-      filteredProjects = filteredProjects.filter(
-        project => project.category === activeCategory
-      );
+      filtered = filtered.filter(project => project.category === activeCategory);
     }
 
     // Filter by search query (check title and description)
     if (searchQuery.trim() !== '') {
       const lowerQuery = searchQuery.toLowerCase();
-      filteredProjects = filteredProjects.filter(project => 
+      filtered = filtered.filter(project =>
         project.title.toLowerCase().includes(lowerQuery) ||
         project.description.toLowerCase().includes(lowerQuery)
       );
     }
 
-    setProjects(filteredProjects);
+    setProjects(filtered);
   }, [searchQuery, activeCategory, allProjects]);
 
   return {
