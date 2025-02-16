@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 
 function useProjects() {
-  const [allProjects, setAllProjects] = useState([]); // Holds the complete list of projects from the backend
-  const [projects, setProjects] = useState([]);         // Holds the filtered list of projects to be displayed
-  const [categories, setCategories] = useState([]);       // Unique project categories extracted from the fetched projects
+  const [allProjects, setAllProjects] = useState([]); // Complete list fetched from the backend
+  const [projects, setProjects] = useState([]);         // Filtered list to be displayed
+  // Initialize categories with 'all' so the default filter is available on first render
+  const [categories, setCategories] = useState(['all']); 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [loading, setLoading] = useState(true);
@@ -37,7 +38,7 @@ function useProjects() {
   // EXTRACT UNIQUE CATEGORIES FROM THE PROJECTS
   useEffect(() => {
     if (allProjects.length > 0) {
-      // Create a Set to extract unique categories from the project list
+      // Create a Set to extract unique categories from the projects list
       const uniqueCategories = Array.from(new Set(allProjects.map(project => project.category)));
       // Prepend the default "all" option for resetting the filter
       setCategories(['all', ...uniqueCategories]);
