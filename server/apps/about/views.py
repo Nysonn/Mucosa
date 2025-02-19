@@ -38,7 +38,7 @@ class ImpactMetricListAPIView(viewsets.ReadOnlyModelViewSet):
 # This endpoint is POST-only and prevents any editing via the API.
 class ContactSubmissionCreateAPIView(mixins.CreateModelMixin,
                                      viewsets.GenericViewSet):
-    queryset = ContactSubmission.objects.all()
+    # queryset = ContactSubmission.objects.all()
     serializer_class = ContactSubmissionSerializer
 
     def create(self, request, *args, **kwargs):
