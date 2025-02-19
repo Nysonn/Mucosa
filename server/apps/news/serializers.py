@@ -25,7 +25,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class NewsArticleSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer(read_only=True)
+    author = AuthorSerializer()
     category = serializers.SlugRelatedField(read_only=True, slug_field='name')
     date = serializers.SerializerMethodField(source='published_date')
 
@@ -50,16 +50,40 @@ class NewsArticleSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ('deleted_at', 'deleted')
 
-    def get_author(self, obj):
-        # Return a simple dict with just name and avatar.
-        return {
-            'name': obj.author.username,  # or obj.author.first_name if preferred
-            'avatar': obj.author.avatar
-        }
+    # def get_author(self, obj):
+    #     # Return a simple dict with just name and avatar.
+    #     return {
+    #         'name': obj.author.username,  # or obj.author.first_name if preferred
+    #         'avatar': obj.author.avatar
+    #     }
+    
+    # def create(self, validated_data):
+    #     # Pop the nested author data from the input.
+    #     author_data = validated_data.pop('author')
+        # Optionally, if you want to reuse an existing author (if any) based on username:
+        # author, created = Author.objects.get_or_create(
+        #     username=author_data['username'],
+        #     defaults=author_data
+        # )
+        # Create the article with the provided author.
+        # news_article = NewsArticle.objects.create(author=author, **validated_data)
+        # return news_article
     
     # def get_category(self, obj):
     #     # Return the category name (or None if category is null)
     #     return obj.category.name if obj.category else None
+    
+    def create(self, validated_data):
+        # Extract nested author data.
+        author_data = validated_data.pop('author')
+        # Get or create an Author based on the username.
+        author, created = Author.objects.get_or_create(
+            username=author_data.get('username'),
+            defaults=author_data
+        )
+        # Create the news article with the provided author.
+        news_article = NewsArticle.objects.create(author=author, **validated_data)
+        return news_article
 
     def get_date(self, obj):
         # Format the published_date (e.g., "March 15, 2024")
