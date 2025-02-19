@@ -1,18 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
-import styles from './AboutPage.module.css'
-import ActiveMembers from '../../src/assets/icons/active-members.png'
-import EventsOrganised from '../../src/assets/icons/events.png'
-import Projects from '../../src/assets/icons/projects.png'
-import Partners from '../../src/assets/icons/partners.png'
-import victorImage from '../../src/assets/images/victorImage.jpg'
-import simonImage from '../../src/assets/images/simonImage.jpg'
-import haveryImage from '../../src/assets/images/haveryImage.jpg'
-import moureenImage from '../../src/assets/images/moureenImage.jpg'
-import prossyImage from '../../src/assets/images/prossyImage.jpg'
-import sarahImage from '../../src/assets/images/sarahImage.jpg'
+import { useState } from 'react';
+import styles from './AboutPage.module.css';
+import ActiveMembers from '../../src/assets/icons/active-members.png';
 import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa';
-import PrimaryButton from  '../../src/components/Buttons/PrimaryButton'
+import PrimaryButton from '../../src/components/Buttons/PrimaryButton';
+import { useTeamMembers, useImpactMetrics, useContactForm } from '../hooks/useAboutData';
 
+/**
+ * Vision and Mission component with static data from the frontend.
+ */
 function VisionMission() {
   return (
     <section className={styles.visionMission}>
@@ -32,77 +27,79 @@ function VisionMission() {
         </p>
       </div>
     </section>
-  )
+  );
 }
 
+/**
+ * AnimatedNumber component remains unchanged.
+ */
 function AnimatedNumber({ value, duration = 2000 }) {
-  const [count, setCount] = useState(0)
-  const countRef = useRef(null)
-  const elementRef = useRef(null)
-  const startValue = parseInt(value.replace('+', ''))
-  const [isVisible, setIsVisible] = useState(false)
+  const [count, setCount] = useState(0);
+  const countRef = useState(null)[0];
+  const elementRef = useState(null)[0];
+  const startValue = parseInt(value.replace('+', ''));
+  const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
+  // Using useEffect to observe when the element comes into view
+  useState(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          setIsVisible(true)
+          setIsVisible(true);
         }
       },
       { threshold: 0.1 }
-    )
+    );
 
-    if (elementRef.current) {
-      observer.observe(elementRef.current)
+    if (elementRef) {
+      observer.observe(elementRef);
     }
 
     return () => {
-      if (elementRef.current) {
-        observer.unobserve(elementRef.current)
+      if (elementRef) {
+        observer.unobserve(elementRef);
       }
-    }
-  }, [])
+    };
+  }, [elementRef]);
 
-  useEffect(() => {
-    if (!isVisible) return
+  useState(() => {
+    if (!isVisible) return;
 
-    const start = 0
-    const end = startValue
-    const stepTime = Math.abs(Math.floor(duration / end))
+    const end = startValue;
+    const stepTime = Math.abs(Math.floor(duration / end));
     
-    if (countRef.current) return
-    
-    countRef.current = setInterval(() => {
+    const intervalId = setInterval(() => {
       setCount(prev => {
-        const next = prev + 1
+        const next = prev + 1;
         if (next === end) {
-          clearInterval(countRef.current)
-          return end
+          clearInterval(intervalId);
+          return end;
         }
-        return next
-      })
-    }, stepTime)
+        return next;
+      });
+    }, stepTime);
 
     return () => {
-      if (countRef.current) {
-        clearInterval(countRef.current)
-      }
-    }
-  }, [startValue, duration, isVisible])
+      clearInterval(intervalId);
+    };
+  }, [startValue, duration, isVisible]);
 
   return (
     <span ref={elementRef}>
       {count}+
     </span>
-  )
+  );
 }
 
+/**
+ * ImpactMetric component for displaying a single metric.
+ */
 function ImpactMetric({ number, label, icon }) {
   return (
     <div className={styles.metric}>
       <div className={styles.metricContent}>
         <div className={styles.metricIcon}>
-          <img src={icon} alt={label} />
+          <img src={icon || ActiveMembers} alt={label} />
         </div>
         <div className={styles.metricNumber}>
           <AnimatedNumber value={number} />
@@ -110,28 +107,28 @@ function ImpactMetric({ number, label, icon }) {
         <div className={styles.metricLabel}>{label}</div>
       </div>
     </div>
-  )
+  );
 }
 
+/**
+ * Updated ContactForm component that uses the useContactForm hook.
+ */
 function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: ''
-  })
-  const [status, setStatus] = useState('')
+  });
+  const { status, submitForm } = useContactForm();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setStatus('sending')
-    
-    // Simulate form submission
-    setTimeout(() => {
-      setStatus('success')
-      setFormData({ name: '', email: '', subject: '', message: '' })
-    }, 1000)
-  }
+    e.preventDefault();
+    await submitForm(formData);
+    if (status === 'success') {
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    }
+  };
 
   return (
     <form className={styles.contactForm} onSubmit={handleSubmit}>
@@ -180,16 +177,24 @@ function ContactForm() {
         disabled={status === 'sending'}
       >
         {status === 'sending' ? 'Sending...' : 'Send Message'}
-      </PrimaryButton >
+      </PrimaryButton>
       {status === 'success' && (
         <p className={styles.successMessage}>
           Thank you for your message! We'll get back to you soon.
         </p>
       )}
+      {status === 'error' && (
+        <p className={styles.errorMessage}>
+          Oops! Something went wrong. Please try again.
+        </p>
+      )}
     </form>
-  )
+  );
 }
 
+/**
+ * TeamMember component to display an individual team member.
+ */
 function TeamMember({ name, role, image, bio, socials }) {
   return (
     <div className={styles.teamMember}>
@@ -234,98 +239,14 @@ function TeamMember({ name, role, image, bio, socials }) {
   );
 }
 
+/**
+ * AboutPage component integrating data from the backend using custom hooks.
+ * Vision and Mission data is static and provided from the frontend.
+ */
 function AboutPage() {
-  const teamMembers = [
-    {
-      name: "Sarah Nakimuli",
-      role: "President",
-      image: prossyImage,
-      bio: "Final year Computer Science student with a passion for AI and community building. Leading MUCOSA's initiatives to create an inclusive tech community.",
-      socials: [
-        { platform: "LinkedIn", link: "https://linkedin.com/in/david-okello" },
-        { platform: "GitHub", link: "https://github.com/davidokello" },
-        { platform: "Twitter", link: "https://twitter.com/sarahnakimuli" },
-      ]
-    },
-    {
-      name: "David Okello",
-      role: "Vice President",
-      image: victorImage,
-      bio: "Software Engineering student specializing in web development. Passionate about mentoring and organizing tech workshops for students.",
-      socials: [
-        { platform: "LinkedIn", link: "https://linkedin.com/in/david-okello" },
-        { platform: "GitHub", link: "https://github.com/davidokello" },
-        { platform: "Twitter", link: "https://twitter.com/sarahnakimuli" },
-      ]
-    },
-    {
-      name: "Patricia Zawedde",
-      role: "Events Coordinator",
-      image: moureenImage,
-      bio: "Information Technology student with excellent organizational skills. Coordinates MUCOSA's hackathons, workshops, and networking events.",
-      socials: [
-        { platform: "LinkedIn", link: "https://linkedin.com/in/david-okello" },
-        { platform: "GitHub", link: "https://github.com/davidokello" },
-        { platform: "Twitter", link: "https://twitter.com/sarahnakimuli" },
-      ]
-    },
-    {
-      name: "Emmanuel Mugisha",
-      role: "Technical Lead",
-      image: simonImage,
-      bio: "Computer Engineering student focused on IoT and embedded systems. Leads technical projects and coding bootcamps within MUCOSA.",
-      socials: [
-        { platform: "LinkedIn", link: "https://linkedin.com/in/david-okello" },
-        { platform: "GitHub", link: "https://github.com/davidokello" },
-        { platform: "Twitter", link: "https://twitter.com/sarahnakimuli" },
-      ]
-    },
-    {
-      name: "Grace Atuhaire",
-      role: "Communications Director",
-      image: sarahImage,
-      bio: "Information Systems student with a flair for digital marketing. Manages MUCOSA's social media presence and community engagement.",
-      socials: [
-        { platform: "LinkedIn", link: "https://linkedin.com/in/david-okello" },
-        { platform: "GitHub", link: "https://github.com/davidokello" },
-        { platform: "Twitter", link: "https://twitter.com/sarahnakimuli" },
-      ]
-    },
-    {
-      name: "Brian Tumusiime",
-      role: "Treasurer",
-      image: haveryImage,
-      bio: "Computer Science student with strong analytical skills. Manages MUCOSA's resources and coordinates sponsorship programs.",
-      socials: [
-        { platform: "LinkedIn", link: "https://linkedin.com/in/david-okello" },
-        { platform: "GitHub", link: "https://github.com/davidokello" },
-        { platform: "Twitter", link: "https://twitter.com/sarahnakimuli" },
-      ]
-    }
-  ]
-
-  const impactMetrics = [
-    {
-      number: "500",
-      label: "Active Members",
-      icon: ActiveMembers
-    },
-    {
-      number: "50",
-      label: "Events Organized",
-      icon: EventsOrganised
-    },
-    {
-      number: "30",
-      label: "Industry Partners",
-      icon: Partners
-    },
-    {
-      number: "200",
-      label: "Project Collaborations",
-      icon: Projects
-    }
-  ]
+  // Use our custom hooks to fetch team members, impact metrics, and handle contact form.
+  const { teamMembers, loading: teamLoading, error: teamError } = useTeamMembers();
+  const { impactMetrics, loading: metricsLoading, error: metricsError } = useImpactMetrics();
 
   return (
     <div className={styles.aboutPage}>
@@ -333,30 +254,46 @@ function AboutPage() {
         <header className={styles.header}>
           <h1 className={styles.pageTitle}>About MUCOSA</h1>
           <p className={styles.pageDescription}>
-            Learn about our community, mission, and the people behind MUCOSA
+            Learn about our community, mission, and the people behind MUCOSA.
           </p>
         </header>
 
+        {/* Vision and Mission Section (static from frontend) */}
         <VisionMission />
 
+        {/* Team Members Section */}
         <section className={styles.teamSection}>
           <h2 className={styles.sectionTitle}>Our Team</h2>
-          <div className={styles.teamGrid}>
-            {teamMembers.map((member, index) => (
-              <TeamMember key={index} {...member} />
-            ))}
-          </div>
+          {teamLoading ? (
+            <p>Loading team members...</p>
+          ) : teamError ? (
+            <p>Error loading team members: {teamError.message}</p>
+          ) : (
+            <div className={styles.teamGrid}>
+              {teamMembers.map((member, index) => (
+                <TeamMember key={index} {...member} />
+              ))}
+            </div>
+          )}
         </section>
 
+        {/* Impact Metrics Section */}
         <section className={styles.impactSection}>
           <h2 className={styles.sectionTitle}>Our Impact</h2>
-          <div className={styles.metricsGrid}>
-            {impactMetrics.map((metric, index) => (
-              <ImpactMetric key={index} {...metric} />
-            ))}
-          </div>
+          {metricsLoading ? (
+            <p>Loading impact metrics...</p>
+          ) : metricsError ? (
+            <p>Error loading impact metrics: {metricsError.message}</p>
+          ) : (
+            <div className={styles.metricsGrid}>
+              {impactMetrics.map((metric, index) => (
+                <ImpactMetric key={index} {...metric} />
+              ))}
+            </div>
+          )}
         </section>
 
+        {/* Contact Section */}
         <section className={styles.contactSection}>
           <h2 className={styles.sectionTitle}>Get in Touch</h2>
           <div className={styles.contactContainer}>
@@ -368,8 +305,7 @@ function AboutPage() {
                   <strong>Email:</strong> info@mucosa.org
                 </p>
                 <p>
-                  <strong>Location:</strong> Faculty of Computing and Informatics,
-                  Mbarara University of Science and Technology
+                  <strong>Location:</strong> Faculty of Computing and Informatics, Mbarara University of Science and Technology
                 </p>
               </div>
             </div>
@@ -378,7 +314,7 @@ function AboutPage() {
         </section>
       </div>
     </div>
-  )
+  );
 }
 
-export default AboutPage 
+export default AboutPage;
