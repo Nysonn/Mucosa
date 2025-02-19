@@ -2,7 +2,7 @@ import styles from './UpcomingEvents.module.css';
 import { Link } from 'react-router-dom';
 import useEvents from '../../hooks/useEvents';
 
-function EventCard({ title, date, location, description }) {
+function EventCard({ title, date, location, description, registrationLink }) {
   return (
     <div className={styles.eventCard}>
       <div className={styles.dateBox}>
