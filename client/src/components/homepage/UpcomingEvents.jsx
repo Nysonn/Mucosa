@@ -68,6 +68,7 @@ function UpcomingEvents() {
                 date={{ month, day }}
                 location={event.location}
                 description={event.description}
+                registrationLink={event.registrationLink}
               />
             );
           })}
