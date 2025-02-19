@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from './AboutPage.module.css';
 import ActiveMembers from '../../src/assets/icons/active-members.png';
 import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa';
@@ -35,60 +35,55 @@ function VisionMission() {
  */
 function AnimatedNumber({ value, duration = 2000 }) {
   const [count, setCount] = useState(0);
-  const countRef = useState(null)[0];
-  const elementRef = useState(null)[0];
-  const startValue = parseInt(value.replace('+', ''));
+  const elementRef = useRef(null); // Use useRef to hold the DOM element
+  const startValue = parseInt(value.replace('+', '')); // Clean number from string
   const [isVisible, setIsVisible] = useState(false);
 
-  // Using useEffect to observe when the element comes into view
-  useState(() => {
+  // Use useEffect to observe when the element comes into view
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
           setIsVisible(true);
+          observer.disconnect(); // Optional: disconnect once visible
         }
       },
       { threshold: 0.1 }
     );
 
-    if (elementRef) {
-      observer.observe(elementRef);
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
     }
 
     return () => {
-      if (elementRef) {
-        observer.unobserve(elementRef);
+      if (elementRef.current) {
+        observer.unobserve(elementRef.current);
       }
     };
-  }, [elementRef]);
+  }, []);
 
-  useState(() => {
+  // Use useEffect to animate the number once visible
+  useEffect(() => {
     if (!isVisible) return;
 
     const end = startValue;
     const stepTime = Math.abs(Math.floor(duration / end));
     
     const intervalId = setInterval(() => {
-      setCount(prev => {
-        const next = prev + 1;
-        if (next === end) {
+      setCount((prev) => {
+        if (prev < end) {
+          return prev + 1;
+        } else {
           clearInterval(intervalId);
-          return end;
+          return prev;
         }
-        return next;
       });
     }, stepTime);
 
-    return () => {
-      clearInterval(intervalId);
-    };
+    return () => clearInterval(intervalId);
   }, [startValue, duration, isVisible]);
 
-  return (
-    <span ref={elementRef}>
-      {count}+
-    </span>
-  );
+  return <span ref={elementRef}>{count}+</span>;
 }
 
 /**
