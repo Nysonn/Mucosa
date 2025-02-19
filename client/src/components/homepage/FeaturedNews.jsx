@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import styles from './FeaturedNews.module.css';
-import featurednews from '../../assets/images/tech-events.jpg';
-import codingComm from '../../assets/images/coding-comm.jpg';
-import gamingConsole from '../../assets/images/gaming-console.jpg';
+import useNews from '../../hooks/useNews';
 
-function NewsCard({ image, category, title, excerpt, date }) {
+function NewsCard({ image, category, excerpt }) {
   return (
     <article className={styles.newsCard}>
       <div className={styles.imageContainer}>
@@ -17,50 +15,29 @@ function NewsCard({ image, category, title, excerpt, date }) {
         </div>
         <span className={styles.category}>{category}</span>
       </div>
-      <div className={styles.content}>
-        <h3 className={styles.title}>{title}</h3>
-        <p className={styles.excerpt}>{excerpt}</p>
-        <div className={styles.footer}>
-          <span className={styles.date}>{date}</span>
-          <button className={styles.readMore}>Read More</button>
-        </div>
-      </div>
     </article>
   );
 }
 
 function FeaturedNews() {
+  // Use the useNews hook to get news articles from the backend.
+  const { news, loading, error } = useNews();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef(null);
 
-  const news = [
-    {
-      image: gamingConsole, 
-      category: 'Technology',
-      title: 'MUCOSA Hosts Successful Tech Innovation Summit',
-      excerpt: 'Over 200 students participated in our annual technology innovation summit, showcasing groundbreaking projects.',
-      date: 'March 10, 2024'
-    },
-    {
-      image: codingComm,
-      category: 'Community',
-      title: 'New Mentorship Program Launches',
-      excerpt: 'Leading industry professionals join forces with MUCOSA to mentor computing students.',
-      date: 'March 8, 2024'
-    },
-    {
-      image: featurednews,
-      category: 'Education',
-      title: 'Workshop Series: Modern Web Development',
-      excerpt: 'Learn the latest web development technologies in our comprehensive workshop series.',
-      date: 'March 5, 2024'
-    }
-  ];
+  // We only need the category, image, and excerpt from each news item.
+  // You can further filter or map if needed.
+  const featuredNews = news.map(item => ({
+    category: item.category,
+    image: item.image,
+    excerpt: item.excerpt
+  }));
 
+  // Start the automatic carousel interval.
   const startInterval = () => {
     intervalRef.current = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % news.length);
+      setCurrentSlide((prev) => (prev + 1) % featuredNews.length);
     }, 3000); // Change slide every 3 seconds
   };
 
@@ -71,9 +48,11 @@ function FeaturedNews() {
   };
 
   useEffect(() => {
-    startInterval();
-    return () => stopInterval(); // Clean up the interval on component unmount
-  }, [news.length]);
+    if (featuredNews.length > 0) {
+      startInterval();
+    }
+    return () => stopInterval(); // Cleanup on unmount or when featuredNews changes
+  }, [featuredNews.length]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -84,6 +63,10 @@ function FeaturedNews() {
     setIsHovered(false);
     startInterval();
   };
+
+  if (loading) return <p>Loading news...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+  if (featuredNews.length === 0) return <p>No news available.</p>;
 
   return (
     <section className={styles.newsSection}>
@@ -99,7 +82,7 @@ function FeaturedNews() {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            {news.map((item, index) => (
+            {featuredNews.map((item, index) => (
               <div
                 key={index}
                 className={styles.carouselSlide}
@@ -114,7 +97,7 @@ function FeaturedNews() {
         </div>
 
         <div className={styles.indicators}>
-          {news.map((_, index) => (
+          {featuredNews.map((_, index) => (
             <button
               key={index}
               className={`${styles.indicator} ${index === currentSlide ? styles.active : ''}`}
