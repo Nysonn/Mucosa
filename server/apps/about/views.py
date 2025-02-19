@@ -1,4 +1,6 @@
+from rest_framework import status
 from django.core.mail import send_mail
+from rest_framework import permissions
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 from .models import TeamMember, ImpactMetric, ContactSubmission
@@ -39,6 +41,7 @@ class ImpactMetricListAPIView(viewsets.ReadOnlyModelViewSet):
 class ContactSubmissionCreateAPIView(mixins.CreateModelMixin,
                                      viewsets.GenericViewSet):
     # queryset = ContactSubmission.objects.all()
+    permission_classes = [permissions.AllowAny]
     serializer_class = ContactSubmissionSerializer
 
     def create(self, request, *args, **kwargs):
