@@ -1,4 +1,4 @@
-# from rest_framework import generics
+from django.core.mail import send_mail
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 from .models import TeamMember, ImpactMetric, ContactSubmission
@@ -41,6 +41,30 @@ class ContactSubmissionCreateAPIView(mixins.CreateModelMixin,
     queryset = ContactSubmission.objects.all()
     serializer_class = ContactSubmissionSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response({'detail': 'Your message has been sent.'}, status=status.HTTP_201_CREATED)
+    
     def perform_create(self, serializer):
-        # Django ORM’s parameterized queries safeguard against SQL injection.
-        serializer.save()
+        # Extract the validated data from the serializer.
+        data = serializer.validated_data
+        subject = data.get('subject', 'No Subject')
+        sender_email = data.get('email')
+        # Compose the message body.
+        message = (
+            f"Name: {data.get('name')}\n"
+            f"Email: {sender_email}\n"
+            f"Message:\n{data.get('message')}"
+        )
+        recipient_list = ['amwineliambolt@gmail.com']
+        
+        # Send the email. This will use your email settings.
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=sender_email,  # Using the sender's email as the from address.
+            recipient_list=recipient_list,
+            fail_silently=False  # Set to True in production if you don't want errors raised.
+        )
