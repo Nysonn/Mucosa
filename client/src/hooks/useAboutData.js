@@ -74,7 +74,7 @@ export function useContactForm() {
   const submitForm = async (formData) => {
     setStatus('sending');
     try {
-      const response = await fetch('http://localhost:8000/about/contact', {
+      const response = await fetch('http://localhost:8000/about/contact/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
