@@ -46,14 +46,7 @@ export function useImpactMetrics() {
           return response.json();
         })
         .then(data => {
-          // Convert the "number" property to a valid string number
-          const convertedMetrics = data.map(metric => ({
-            ...metric,
-            // Use parseInt to convert the string to a number and then back to a string.
-            // This ensures that any unwanted characters are removed.
-            number: String(parseInt(metric.number, 10))
-          }));
-          setImpactMetrics(convertedMetrics);
+          setImpactMetrics(data);
           setLoading(false);
         })
         .catch(err => {
