@@ -10,7 +10,7 @@ class SocialLinkSerializer(serializers.ModelSerializer):
 
 class TeamMemberSerializer(serializers.ModelSerializer):
     socials = SocialLinkSerializer(source="social_links", many=True, read_only=True)
-    image = serializers.ImageField(source="image_url")
+    image = serializers.URLField(source="image_url")
 
     class Meta:
         model = TeamMember
@@ -19,7 +19,7 @@ class TeamMemberSerializer(serializers.ModelSerializer):
 
 class ImpactMetricSerializer(serializers.ModelSerializer):
 
-    icon = serializers.ImageField(source="icon_url")
+    icon = serializers.URLField(source="icon_url")
     number = serializers.SerializerMethodField()
 
     def get_number(self, obj):
