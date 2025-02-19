@@ -13,7 +13,9 @@ function EventCard({ title, date, location, description }) {
         <h3 className={styles.eventTitle}>{title}</h3>
         <p className={styles.eventLocation}>{location}</p>
         <p className={styles.eventDescription}>{description}</p>
-        <button className={styles.registerButton}>Register Now</button>
+        <a href={registrationLink} target="_blank" rel="noopener noreferrer">
+              <button className={styles.registerButton}>Register Now</button>
+            </a>
       </div>
     </div>
   );
