@@ -35,5 +35,6 @@ class EventSerializer(serializers.ModelSerializer):
     def get_date(self, obj):
         return {
             'month': obj.date.strftime('%b').upper(),  # e.g., MAR, APR
-            'day': obj.date.strftime('%d')
+            'day': obj.date.strftime('%d'),
+            'year': obj.date.strftime('%Y')  # Adding the year
         }
