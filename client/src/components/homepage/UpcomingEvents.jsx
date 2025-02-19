@@ -1,5 +1,6 @@
-import styles from './UpcomingEvents.module.css'
-import {Link} from 'react-router-dom'
+import styles from './UpcomingEvents.module.css';
+import { Link } from 'react-router-dom';
+import useEvents from '../hooks/useEvents';
 
 function EventCard({ title, date, location, description }) {
   return (
@@ -15,30 +16,30 @@ function EventCard({ title, date, location, description }) {
         <button className={styles.registerButton}>Register Now</button>
       </div>
     </div>
-  )
+  );
 }
 
 function UpcomingEvents() {
-  const events = [
-    {
-      title: "Tech Career Workshop",
-      date: { month: "MAR", day: "15" },
-      location: "Main Campus, Room 205",
-      description: "Join industry experts for insights into tech career paths and opportunities."
-    },
-    {
-      title: "Coding Bootcamp",
-      date: { month: "MAR", day: "22" },
-      location: "Computer Lab 3",
-      description: "Intensive hands-on session on web development fundamentals."
-    },
-    {
-      title: "Hackathon 2024",
-      date: { month: "APR", day: "05" },
-      location: "Innovation Hub",
-      description: "24-hour coding challenge to solve real-world problems."
-    }
-  ]
+  // Retrieve all events using your existing useEvents hook.
+  const { events: allEvents, loading, error } = useEvents();
+
+  // Get the current date.
+  const now = new Date();
+
+  // Filter events that:
+  // 1. Have a registrationLink provided.
+  // 2. Have registration open.
+  // 3. Have an event date that is upcoming (event date >= current date).
+  const filteredEvents = allEvents.filter(event => {
+    const eventDate = new Date(event.date);
+    return event.registrationLink && event.isRegistrationOpen && eventDate >= now;
+  });
+
+  // Sort the filtered events by date in ascending order (soonest event first).
+  filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  // Only select the first three events.
+  const events = filteredEvents.slice(0, 3);
 
   return (
     <section className={styles.eventsSection}>
@@ -47,19 +48,33 @@ function UpcomingEvents() {
           <h2 className={styles.title}>Upcoming Events</h2>
           <p className={styles.subtitle}>Join us in our upcoming tech events and workshops</p>
         </div>
+        {loading && <p>Loading events...</p>}
+        {error && <p>Error: {error.message}</p>}
         <div className={styles.eventsGrid}>
-          {events.map((event, index) => (
-            <EventCard key={index} {...event} />
-          ))}
+          {events.map((event, index) => {
+            // Format the event date for display.
+            const eventDate = new Date(event.date);
+            const month = eventDate.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+            const day = eventDate.getDate();
+            return (
+              <EventCard
+                key={index}
+                title={event.title}
+                date={{ month, day }}
+                location={event.location}
+                description={event.description}
+              />
+            );
+          })}
         </div>
         <div className={styles.viewMore}>
           <Link to="/events">
-          <button className={styles.viewMoreButton}>View All Events</button>
+            <button className={styles.viewMoreButton}>View All Events</button>
           </Link>
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export default UpcomingEvents 
+export default UpcomingEvents;

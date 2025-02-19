@@ -48,7 +48,7 @@ function ProudPartners() {
           <p className={styles.ctaText}>
             Interested in partnering with MUCOSA?
           </p>
-          <Link to="/become-a-partner">
+          <Link to="/about">
               <PrimaryButton>
                 Become a Partner
               </PrimaryButton>
