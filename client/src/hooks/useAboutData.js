@@ -33,30 +33,37 @@ export function useTeamMembers() {
  * Hook to fetch impact metrics data from the backend.
  */
 export function useImpactMetrics() {
-  const [impactMetrics, setImpactMetrics] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch('http://localhost:8000/about/impact')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch impact metrics');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setImpactMetrics(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err);
-        setLoading(false);
-      });
-  }, []);
-
-  return { impactMetrics, loading, error };
-}
+    const [impactMetrics, setImpactMetrics] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+  
+    useEffect(() => {
+      fetch('http://localhost:8000/about/impact')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch impact metrics');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Convert the "number" property to a valid string number
+          const convertedMetrics = data.map(metric => ({
+            ...metric,
+            // Use parseInt to convert the string to a number and then back to a string.
+            // This ensures that any unwanted characters are removed.
+            number: String(parseInt(metric.number, 10))
+          }));
+          setImpactMetrics(convertedMetrics);
+          setLoading(false);
+        })
+        .catch(err => {
+          setError(err);
+          setLoading(false);
+        });
+    }, []);
+  
+    return { impactMetrics, loading, error };
+  }  
 
 /**
  * Hook to handle contact form submissions.
