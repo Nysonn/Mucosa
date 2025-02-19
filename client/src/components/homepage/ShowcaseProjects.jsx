@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import styles from './ShowcaseProjects.module.css';
 import { Link } from "react-router-dom";
 import PrimaryButton from '../Buttons/PrimaryButton';
 import SecondaryButton from '../Buttons/SecondaryButton';
 import useProjects from '../../hooks/useProjects';
+import ProjectSubmissionModal from '../common/ProjectSubmissionModal';
 
 function ProjectCard({ title, description, tech, image, github }) {
   return (
@@ -40,6 +41,7 @@ function ProjectCard({ title, description, tech, image, github }) {
 
 function ShowcaseProjects() {
   const { projects, loading, error } = useProjects();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Compute three random projects whenever the projects list changes.
   const randomProjects = useMemo(() => {
@@ -48,6 +50,23 @@ function ShowcaseProjects() {
     const shuffled = [...projects].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 3);
   }, [projects]);
+
+  const handleSubmitProject = async (formData) => {
+    try {
+      // Here you would implement the logic to send the data to your backend
+      // For example:
+      // const response = await fetch('/api/projects', {
+      //   method: 'POST',
+      //   body: formData,
+      // });
+      
+      setIsModalOpen(false);
+      // Show success message or handle response
+    } catch (error) {
+      console.error('Error submitting project:', error);
+      // Handle error appropriately
+    }
+  };
 
   if (loading) return <p>Loading projects...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -69,11 +88,9 @@ function ShowcaseProjects() {
         </div>
 
         <div className={styles.cta}>
-          <Link to="#">
-            <PrimaryButton>
-              Submit Your Project
-            </PrimaryButton>
-          </Link>
+          <PrimaryButton onClick={() => setIsModalOpen(true)}>
+            Submit Your Project
+          </PrimaryButton>
           <Link to="/projects">
             <SecondaryButton>
               View All Projects
@@ -81,6 +98,12 @@ function ShowcaseProjects() {
           </Link>
         </div>
       </div>
+
+      <ProjectSubmissionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleSubmitProject}
+      />
     </section>
   );
 }

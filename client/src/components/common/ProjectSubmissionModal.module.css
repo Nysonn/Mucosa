@@ -1,0 +1,131 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: var(--z-modal);
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .modal {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  .closeButton {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-gray-600);
+    transition: color 0.2s;
+  }
+  
+  .closeButton:hover {
+    color: var(--color-gray-900);
+  }
+  
+  .modalTitle {
+    color: var(--color-secondary);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    font-size: var(--font-size-2xl);
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .formGroup input,
+  .formGroup textarea {
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-base);
+    font-size: var(--font-size-base);
+    transition: border-color 0.2s;
+  }
+  
+  .formGroup input:focus,
+  .formGroup textarea:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+  }
+  
+  .fileInput {
+    display: block;
+    padding: var(--spacing-sm);
+    border: 2px dashed var(--color-gray-300);
+    border-radius: var(--radius-base);
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  
+  .fileInput:hover {
+    border-color: var(--color-secondary);
+  }
+  
+  .fileInput input {
+    display: none;
+  }
+  
+  .submitButton {
+    background: var(--color-secondary);
+    color: var(--color-white);
+    border: none;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-base);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .submitButton:hover {
+    background: var(--color-secondary-light);
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @media (max-width: var(--breakpoint-md)) {
+    .formRow {
+      grid-template-columns: 1fr;
+    }
+  }
