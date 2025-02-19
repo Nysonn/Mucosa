@@ -14,11 +14,11 @@ class EventInline(admin.TabularInline):
     show_change_link = True
 
 
-@admin.register(Organizer)
-class OrganizerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'avatar')
-    search_fields = ('name',)
-    inlines = [EventInline]
+# @admin.register(Organizer)
+# class OrganizerAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'avatar')
+#     search_fields = ('name',)
+#     inlines = [EventInline]
 
 
 @admin.register(Event)
