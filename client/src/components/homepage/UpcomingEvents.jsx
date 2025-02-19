@@ -26,17 +26,22 @@ function UpcomingEvents() {
   // Get the current date.
   const now = new Date();
 
-  // Filter events that:
-  // 1. Have a registrationLink provided.
-  // 2. Have registration open.
-  // 3. Have an event date that is upcoming (event date >= current date).
+  // Filter events based on your criteria.
   const filteredEvents = allEvents.filter(event => {
-    const eventDate = new Date(event.date);
+    // Construct a valid date from the event's date object
+    const { day, month, year } = event.date;
+    const eventDate = new Date(`${month} ${day}, ${year}`);
     return event.registrationLink && event.isRegistrationOpen && eventDate >= now;
   });
 
   // Sort the filtered events by date in ascending order (soonest event first).
-  filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+  filteredEvents.sort((a, b) => {
+    const { day: dayA, month: monthA, year: yearA } = a.date;
+    const { day: dayB, month: monthB, year: yearB } = b.date;
+    const dateA = new Date(`${monthA} ${dayA}, ${yearA}`);
+    const dateB = new Date(`${monthB} ${dayB}, ${yearB}`);
+    return dateA - dateB;
+  });
 
   // Only select the first three events.
   const events = filteredEvents.slice(0, 3);
@@ -53,9 +58,7 @@ function UpcomingEvents() {
         <div className={styles.eventsGrid}>
           {events.map((event, index) => {
             // Format the event date for display.
-            const eventDate = new Date(event.date);
-            const month = eventDate.toLocaleString('en-US', { month: 'short' }).toUpperCase();
-            const day = eventDate.getDate();
+            const { day, month } = event.date; // No need to reparse if the backend provides this directly
             return (
               <EventCard
                 key={index}
