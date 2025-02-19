@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from .views import ProjectViewSet, CategoryViewSet
+from .views import ProjectViewSet, CategoryViewSet, ProjectSubmissionEmailView
 
 # Register the Project viewset with the router to automatically
 # generate endpoints.
@@ -30,6 +30,7 @@ urlpatterns = [
     *router.urls,  # Include all routes from the router
     # Swagger UI documentation endpoint
     # path('all-data/', ProjectViewSet.as_view(),name='projects-data'),
+    path('submit-project/', ProjectSubmissionEmailView.as_view(), name='submit-project'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     # ReDoc documentation endpoint
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
