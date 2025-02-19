@@ -18,17 +18,17 @@ class TeamMemberAdmin(admin.ModelAdmin):
 class ImpactMetricAdmin(admin.ModelAdmin):
     list_display = ('label', 'number')
 
+# Commented this to ignore storing the contact form.
+# @admin.register(ContactSubmission)
+# class ContactSubmissionAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'email', 'subject', 'created_at')
+#     readonly_fields = ('name', 'email', 'subject', 'message', 'created_at')
 
-@admin.register(ContactSubmission)
-class ContactSubmissionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'subject', 'created_at')
-    readonly_fields = ('name', 'email', 'subject', 'message', 'created_at')
+#     def has_change_permission(self, request, obj=None):
+#         # Disable editing of contact submissions – they are created via the
+#         # frontend.
+#         return False
 
-    def has_change_permission(self, request, obj=None):
-        # Disable editing of contact submissions – they are created via the
-        # frontend.
-        return False
-
-    def has_add_permission(self, request):
-        # Disallow manual additions via admin.
-        return False
+#     def has_add_permission(self, request):
+#         # Disallow manual additions via admin.
+#         return False
