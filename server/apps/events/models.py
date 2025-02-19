@@ -39,8 +39,8 @@ class Event(models.Model):
                                 blank=True)
     is_registration_open = models.BooleanField(default=False)
     registrationLink = models.URLField(max_length=500, blank=True, null=True)
-    organizer = models.ForeignKey(Organizer, related_name='events',
-                                  on_delete=models.CASCADE)
+    # organizer = models.ForeignKey(Organizer, related_name='events',
+    #                               on_delete=models.CASCADE, null=True)
     
     # Timestamps for record keeping.
     created_at = models.DateTimeField(auto_now_add=True)
