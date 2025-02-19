@@ -337,6 +337,7 @@
 .formGroup input:focus,
 .formGroup textarea:focus {
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(140, 215, 0, 0.1);
   outline: none;
 }
 
@@ -365,6 +366,59 @@
   margin-top: var(--spacing-md);
   color: #28a745;
   text-align: center;
+}
+
+.messageBox {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.messageContent {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.successBox {
+  background-color: rgba(40, 167, 69, 0.1);
+  border: 1px solid var(--color-success);
+  color: var(--color-success);
+}
+
+.errorBox {
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }
 
 @media (max-width: var(--breakpoint-md)) {

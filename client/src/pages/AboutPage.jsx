@@ -106,7 +106,7 @@ function ImpactMetric({ number, label, icon }) {
 }
 
 /**
- * Updated ContactForm component that uses the useContactForm hook.
+ * Updated ContactForm component with enhanced message handling
  */
 function ContactForm() {
   const [formData, setFormData] = useState({
@@ -116,13 +116,36 @@ function ContactForm() {
     message: ''
   });
   const { status, submitForm } = useContactForm();
+  const [showMessage, setShowMessage] = useState(false);
+
+  useEffect(() => {
+    if (status === 'success' || status === 'error') {
+      setShowMessage(true);
+      
+      // For success: clear form and hide message after delay
+      if (status === 'success') {
+        const messageTimer = setTimeout(() => {
+          setShowMessage(false);
+          setFormData({ name: '', email: '', subject: '', message: '' });
+        }, 3000);
+        
+        return () => clearTimeout(messageTimer);
+      }
+      
+      // For error: just hide message after delay
+      if (status === 'error') {
+        const messageTimer = setTimeout(() => {
+          setShowMessage(false);
+        }, 3000);
+        
+        return () => clearTimeout(messageTimer);
+      }
+    }
+  }, [status]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await submitForm(formData);
-    if (status === 'success') {
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    }
   };
 
   return (
@@ -173,15 +196,29 @@ function ContactForm() {
       >
         {status === 'sending' ? 'Sending...' : 'Send Message'}
       </PrimaryButton>
-      {status === 'success' && (
-        <p className={styles.successMessage}>
-          Thank you for your message! We'll get back to you soon.
-        </p>
+
+      {showMessage && status === 'success' && (
+        <div className={`${styles.messageBox} ${styles.successBox}`}>
+          <div className={styles.messageContent}>
+            <svg className={styles.icon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+            </svg>
+            <p>Thank you for your message! We'll get back to you soon.</p>
+          </div>
+        </div>
       )}
-      {status === 'error' && (
-        <p className={styles.errorMessage}>
-          Oops! Something went wrong. Please try again.
-        </p>
+
+      {showMessage && status === 'error' && (
+        <div className={`${styles.messageBox} ${styles.errorBox}`}>
+          <div className={styles.messageContent}>
+            <svg className={styles.icon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+              <path d="M12 8v4m0 4h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            <p>Oops! Something went wrong. Please try again.</p>
+          </div>
+        </div>
       )}
     </form>
   );
