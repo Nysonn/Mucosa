@@ -1,6 +1,6 @@
 import styles from './UpcomingEvents.module.css';
 import { Link } from 'react-router-dom';
-import useEvents from '../hooks/useEvents';
+import useEvents from '../../hooks/useEvents';
 
 function EventCard({ title, date, location, description }) {
   return (
