@@ -9,6 +9,7 @@ from .serializers import (
     ImpactMetricSerializer,
     ContactSubmissionSerializer
 )
+from django.conf import settings
 
 
 # List API view for team members – used prefetch_related to optimize social
@@ -61,7 +62,7 @@ class ContactSubmissionCreateAPIView(mixins.CreateModelMixin,
             f"Email: {sender_email}\n"
             f"Message:\n{data.get('message')}"
         )
-        recipient_list = ['amwineliambolt@gmail.com']
+        recipient_list = [settings.EMAIL_HOST_USER]
         
         # Send the email. This will use your email settings.
         send_mail(
