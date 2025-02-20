@@ -1,4 +1,4 @@
-import styles from './FeaturedNews.module.css';
+import styles from '../homepage/FeaturedNews.module.css';
 
 function NewsCard({ image, category, excerpt }) {
   return (
