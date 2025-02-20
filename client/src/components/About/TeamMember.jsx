@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './AboutPage.module.css';
+import styles from '../../pages/AboutPage.module.css';
 import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa';
 
 function TeamMember({ name, role, image, bio, socials }) {

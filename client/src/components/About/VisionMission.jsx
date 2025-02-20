@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './AboutPage.module.css';
+import styles from '../../pages/AboutPage.module.css';
 
 function VisionMission() {
   return (

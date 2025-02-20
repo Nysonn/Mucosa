@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from './AboutPage.module.css';
+import styles from '../../pages/AboutPage.module.css';
 import PrimaryButton from '../Buttons/PrimaryButton';
 import { useContactForm } from '../../hooks/useAboutData';
 
