@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './ProjectSubmissionModal.module.css';
-import useSubmitProject from './useSubmitProject';
+import useSubmitProject from '../../hooks/useSubmitProject';
 
 /**
  * ProjectSubmissionModal Component
