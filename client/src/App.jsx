@@ -19,7 +19,6 @@ function App() {
       <div className="app">
         <Header />
         <main>
-          <Suspense fallback={<div>Loading...</div>}>
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/news" element={<NewsPage />} />
@@ -30,7 +29,6 @@ function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="*" element={<ErrorPage />} />
             </Routes>
-          </Suspense>
         </main>
         <Footer />
       </div>
