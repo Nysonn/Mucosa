@@ -1,75 +1,62 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import styles from './ShowcaseProjects.module.css';
 import { Link } from "react-router-dom";
 import PrimaryButton from '../Buttons/PrimaryButton';
 import SecondaryButton from '../Buttons/SecondaryButton';
 import useProjects from '../../hooks/useProjects';
 import ProjectSubmissionModal from '../common/ProjectSubmissionModal';
-
-function ProjectCard({ title, description, tech, image, github }) {
-  return (
-    <div className={styles.projectCard}>
-      <div className={styles.imageContainer}>
-        <div 
-          className={styles.projectImage}
-          style={{ backgroundImage: `url(${image})` }}
-        />
-        <div className={styles.overlay}>
-          <div className={styles.links}>
-            {github && (
-              <a href={github} target="_blank" rel="noopener noreferrer" className={styles.link}>
-                GitHub
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className={styles.content}>
-        <h3 className={styles.projectTitle}>{title}</h3>
-        <p className={styles.projectDescription}>{description}</p>
-        <div className={styles.techStack}>
-          {tech.map((item, index) => (
-            <span key={index} className={styles.techItem}>
-              {item}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+import ProjectCard from '../ProjectCard/ProjectCard';
 
 function ShowcaseProjects() {
   const { projects, loading, error } = useProjects();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const intervalRef = useRef(null);
 
   // Compute three random projects whenever the projects list changes.
-  const randomProjects = useMemo(() => {
+  const featuredProjects = useMemo(() => {
     if (!projects || projects.length === 0) return [];
-    // Shuffle a copy of the projects array and pick the first three.
     const shuffled = [...projects].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 3);
   }, [projects]);
 
+  // Carousel interval logic
+  const startInterval = () => {
+    intervalRef.current = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % featuredProjects.length);
+    }, 3000);
+  };
+
+  const stopInterval = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+
+  useEffect(() => {
+    if (featuredProjects.length > 0) startInterval();
+    return () => stopInterval();
+  }, [featuredProjects.length]);
+
+  const handleMouseEnter = () => {
+    stopInterval();
+  };
+
+  const handleMouseLeave = () => {
+    startInterval();
+  };
+
   const handleSubmitProject = async (formData) => {
     try {
-      // Here you would implement the logic to send the data to your backend
-      // For example:
-      // const response = await fetch('/api/projects', {
-      //   method: 'POST',
-      //   body: formData,
-      // });
-      
+      // Implement project submission logic here
       setIsModalOpen(false);
-      // Show success message or handle response
+      // Optionally, handle response or show success message
     } catch (error) {
       console.error('Error submitting project:', error);
-      // Handle error appropriately
     }
   };
 
   if (loading) return <p>Loading projects...</p>;
   if (error) return <p>Error: {error.message}</p>;
+  if (featuredProjects.length === 0) return <p>No projects available.</p>;
 
   return (
     <section className={styles.showcaseSection}>
@@ -82,8 +69,16 @@ function ShowcaseProjects() {
         </div>
 
         <div className={styles.projectsGrid}>
-          {randomProjects.map((project, index) => (
-            <ProjectCard key={index} {...project} />
+          {featuredProjects.map((project, index) => (
+            <div
+              key={index}
+              className={styles.carouselSlide}
+              style={{ transform: `translateX(${(index - currentSlide) * 100}%)` }}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <ProjectCard {...project} />
+            </div>
           ))}
         </div>
 
