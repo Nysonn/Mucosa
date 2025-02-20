@@ -1,20 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './ProjectSubmissionModal.module.css';
+import useSubmitProject from './useSubmitProject';
 
 /**
  * ProjectSubmissionModal Component
  *
- * Renders a modal dialog for project submissions.
- * This updated version enhances accessibility and code clarity.
+ * Renders a modal for submitting project details.
+ * Utilizes a custom hook to send data to the backend and mirrors the pattern of the working contact form.
  *
- * @param {Object} props - Component props.
- * @param {boolean} props.isOpen - Indicates if the modal is currently open.
- * @param {function} props.onClose - Callback to be invoked when the modal should close.
- * @param {function} props.onSubmit - Callback to handle the submission of project data.
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.isOpen - Whether the modal is open.
+ * @param {function} props.onClose - Callback to close the modal.
  */
-function ProjectSubmissionModal({ isOpen, onClose, onSubmit }) {
+function ProjectSubmissionModal({ isOpen, onClose }) {
   const [isClosing, setIsClosing] = useState(false);
-  const [message, setMessage] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     studentName: '',
@@ -25,19 +24,21 @@ function ProjectSubmissionModal({ isOpen, onClose, onSubmit }) {
     description: '',
     image: null,
   });
-  
-  // Refs for managing focus within the modal
+  const [showMessage, setShowMessage] = useState(false);
+  const { status, submitProject } = useSubmitProject();
+
+  // Refs for focus management (accessibility)
   const modalRef = useRef(null);
   const firstInputRef = useRef(null);
 
-  // Set focus on the first input field when the modal opens.
+  // Focus the first input when the modal opens.
   useEffect(() => {
     if (isOpen && firstInputRef.current) {
       firstInputRef.current.focus();
     }
   }, [isOpen]);
 
-  // Listen for 'Escape' key press to close the modal for accessibility.
+  // Close the modal on Escape key press.
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && isOpen) {
@@ -49,17 +50,24 @@ function ProjectSubmissionModal({ isOpen, onClose, onSubmit }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  // Clear any messages when the modal is closed.
+  // Show feedback messages when status changes.
   useEffect(() => {
-    if (!isOpen) {
-      setMessage(null);
+    if (status === 'success' || status === 'error') {
+      setShowMessage(true);
+      const timer = setTimeout(() => {
+        setShowMessage(false);
+        if (status === 'success') {
+          clearForm();
+          handleClose();
+        }
+      }, 3000);
+      return () => clearTimeout(timer);
     }
-  }, [isOpen]);
+  }, [status]);
 
   /**
-   * Handles changes for both text and file inputs.
-   *
-   * @param {Event} e - The input change event.
+   * Handles input changes (both text and file inputs).
+   * @param {Event} e - The change event.
    */
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -70,20 +78,7 @@ function ProjectSubmissionModal({ isOpen, onClose, onSubmit }) {
   };
 
   /**
-   * Initiates the closing animation and then calls the provided onClose callback.
-   */
-  const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsClosing(false);
-      onClose();
-      // Optionally reset the form when closing.
-      clearForm();
-    }, 300); // Duration should match the CSS animation duration.
-  };
-
-  /**
-   * Resets the form data to its initial state.
+   * Clears the form data.
    */
   const clearForm = () => {
     setFormData({
@@ -99,37 +94,25 @@ function ProjectSubmissionModal({ isOpen, onClose, onSubmit }) {
   };
 
   /**
-   * Handles form submission by calling the provided onSubmit callback.
-   * Displays success or error messages accordingly.
-   *
+   * Initiates the closing animation and triggers the onClose callback.
+   */
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, 300); // This should match the CSS animation duration.
+  };
+
+  /**
+   * Handles form submission by delegating to the custom hook.
    * @param {Event} e - The form submission event.
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await onSubmit(formData);
-      setMessage({
-        type: 'success',
-        text: 'Project submitted successfully! 🎉',
-      });
-      // Clear form and close the modal after a short delay.
-      setTimeout(() => {
-        clearForm();
-        handleClose();
-        setMessage(null);
-      }, 2000);
-    } catch (error) {
-      setMessage({
-        type: 'error',
-        text: 'Failed to submit project. Please try again.',
-      });
-      setTimeout(() => {
-        setMessage(null);
-      }, 3000);
-    }
+    await submitProject(formData);
   };
 
-  // Render nothing if the modal is not open.
   if (!isOpen) return null;
 
   return (
@@ -155,7 +138,7 @@ function ProjectSubmissionModal({ isOpen, onClose, onSubmit }) {
           <h2 id="modal-title" className={styles.modalTitle}>
             Submit Your Project
           </h2>
-          
+
           <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.formGroup}>
               <input
@@ -261,52 +244,51 @@ function ProjectSubmissionModal({ isOpen, onClose, onSubmit }) {
               </label>
             </div>
 
-            <button type="submit" className={styles.submitButton}>
-              Submit Project
+            <button type="submit" className={styles.submitButton} disabled={status === 'sending'}>
+              {status === 'sending' ? 'Submitting...' : 'Submit Project'}
             </button>
           </form>
+
+          {showMessage && status === 'success' && (
+            <div className={`${styles.message} ${styles.success}`} role="alert" aria-live="assertive">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden="true"
+              >
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+              <p>Project submitted successfully! 🎉</p>
+            </div>
+          )}
+
+          {showMessage && status === 'error' && (
+            <div className={`${styles.message} ${styles.error}`} role="alert" aria-live="assertive">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12" y2="16" />
+              </svg>
+              <p>Failed to submit project. Please try again.</p>
+            </div>
+          )}
         </div>
       </div>
-      
-      {message && (
-        <div
-          className={`${styles.message} ${styles[message.type]}`}
-          role="alert"
-          aria-live="assertive"
-        >
-          {message.type === 'success' ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-              <polyline points="22 4 12 14.01 9 11.01" />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12" y2="16" />
-            </svg>
-          )}
-          {message.text}
-        </div>
-      )}
     </>
   );
 }
