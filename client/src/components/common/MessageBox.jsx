@@ -1,6 +1,6 @@
 // MessageBox.jsx
 import React from 'react';
-import styles from './ProjectSubmission.module.css';
+import styles from './ProjectSubmissionModal.module.css';
 
 function MessageBox({ type, children }) {
   return (
