@@ -1,17 +1,11 @@
 from rest_framework import serializers
-from .models import NewsArticle, Author, Category
+from .models import NewsArticle, NewsAuthor, Category
 
 
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Author
-        fields = [
-            # 'id',
-            'username',
-            # 'email',
-            'avatar',
-            # 'role'
-            ]
+        model = NewsAuthor
+        fields = ['name', 'avatar']
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -74,14 +68,8 @@ class NewsArticleSerializer(serializers.ModelSerializer):
     #     return obj.category.name if obj.category else None
     
     def create(self, validated_data):
-        # Extract nested author data.
         author_data = validated_data.pop('author')
-        # Get or create an Author based on the username.
-        author, created = Author.objects.get_or_create(
-            username=author_data.get('username'),
-            defaults=author_data
-        )
-        # Create the news article with the provided author.
+        author, created = NewsAuthor.objects.get_or_create(name=author_data.get('name'), defaults=author_data)
         news_article = NewsArticle.objects.create(author=author, **validated_data)
         return news_article
 

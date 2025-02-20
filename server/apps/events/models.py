@@ -3,8 +3,6 @@ from django.db import models
 
 class Organizer(models.Model):
     name = models.CharField(max_length=255)
-    # Assuming an external URL for the avatar image; adjust to ImageField if
-    # you store files.
     avatar = models.URLField(max_length=500)
 
     def __str__(self):

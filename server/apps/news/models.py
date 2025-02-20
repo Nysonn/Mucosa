@@ -15,13 +15,13 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
-# Author model based on AbstractUser for authentication and extra profile data
-class Author(AbstractUser):
+# NewsAuthor model (removed AbstractUser comment since we're using a simple model)
+class NewsAuthor(models.Model):
+    name = models.CharField(max_length=150, unique=True)
     avatar = models.URLField(max_length=255, blank=True, null=True)
-    role = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return self.username
+        return self.name
 
 
 # Category model to normalize article categories
@@ -70,7 +70,7 @@ class NewsArticle(TimeStampedModel):
     image_caption = models.CharField(max_length=255, blank=True, null=True)
     image_credit = models.CharField(max_length=255, blank=True, null=True)
 
-    author = models.ForeignKey(Author, on_delete=models.CASCADE,
+    author = models.ForeignKey(NewsAuthor, on_delete=models.CASCADE,
                                related_name='articles')
     
     # Deleted flag and timestamp for soft delete

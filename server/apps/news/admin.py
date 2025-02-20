@@ -1,12 +1,12 @@
 from django.contrib import admin
-from .models import Author, Category, NewsArticle
+from .models import NewsAuthor, Category, NewsArticle
 from .forms import NewsArticleForm
 
 
-@admin.register(Author)
+@admin.register(NewsAuthor)
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'role', 'avatar')
-    search_fields = ('username', 'email')
+    list_display = ('name', 'avatar')
+    search_fields = ('name',)
 
 
 @admin.register(Category)
