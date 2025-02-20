@@ -14,6 +14,7 @@ import useSubmitProject from '../../hooks/useSubmitProject';
  */
 function ProjectSubmissionModal({ isOpen, onClose }) {
   const [isClosing, setIsClosing] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     studentName: '',
@@ -71,10 +72,28 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
    */
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
+    if (files) {
+      const file = files[0];
+      setFormData(prev => ({
+        ...prev,
+        [name]: file
+      }));
+      
+      // Create image preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview({
+          url: reader.result,
+          name: file.name
+        });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   /**
@@ -91,6 +110,7 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
       description: '',
       image: null,
     });
+    setImagePreview(null);
   };
 
   /**
@@ -233,7 +253,7 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
                   <polyline points="17 8 12 3 7 8" />
                   <line x1="12" y1="3" x2="12" y2="15" />
                 </svg>
-                <span>Upload Project Image</span>
+                <span>{imagePreview ? 'Change Image' : 'Upload Project Image'}</span>
                 <input
                   type="file"
                   name="image"
@@ -242,6 +262,12 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
                   required
                 />
               </label>
+              {imagePreview && (
+                <div className={styles.filePreview}>
+                  <img src={imagePreview.url} alt="Preview" />
+                  <div className={styles.filePreviewName}>{imagePreview.name}</div>
+                </div>
+              )}
             </div>
 
             <button type="submit" className={styles.submitButton} disabled={status === 'sending'}>
@@ -250,41 +276,27 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
           </form>
 
           {showMessage && status === 'success' && (
-            <div className={`${styles.message} ${styles.success}`} role="alert" aria-live="assertive">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                <polyline points="22 4 12 14.01 9 11.01" />
-              </svg>
-              <p>Project submitted successfully! 🎉</p>
+            <div className={`${styles.messageBox} ${styles.successBox}`} role="alert" aria-live="assertive">
+              <div className={styles.messageContent}>
+                <svg className={styles.icon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" strokeWidth="2"/>
+                  <polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" strokeWidth="2"/>
+                </svg>
+                <p>Project submitted successfully! 🎉</p>
+              </div>
             </div>
           )}
 
           {showMessage && status === 'error' && (
-            <div className={`${styles.message} ${styles.error}`} role="alert" aria-live="assertive">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12" y2="16" />
-              </svg>
-              <p>Failed to submit project. Please try again.</p>
+            <div className={`${styles.messageBox} ${styles.errorBox}`} role="alert" aria-live="assertive">
+              <div className={styles.messageContent}>
+                <svg className={styles.icon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                  <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" strokeWidth="2"/>
+                  <line x1="12" y1="16" x2="12" y2="16" stroke="currentColor" strokeWidth="2"/>
+                </svg>
+                <p>Failed to submit project. Please try again.</p>
+              </div>
             </div>
           )}
         </div>

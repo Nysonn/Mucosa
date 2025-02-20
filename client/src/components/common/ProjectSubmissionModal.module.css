@@ -231,3 +231,53 @@
       grid-template-columns: 1fr;
     }
   }
+  
+  .filePreview {
+    margin-top: var(--spacing-sm);
+    text-align: center;
+    position: relative;
+  }
+  
+  .filePreview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: var(--radius-base);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .filePreviewName {
+    margin-top: var(--spacing-xs);
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+  }
+  
+  .messageBox {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    animation: slideInRight 0.3s ease-out forwards;
+  }
+  
+  .messageContent {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+  
+  .successBox {
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 1px solid var(--color-success);
+    color: var(--color-success);
+  }
+  
+  .errorBox {
+    background-color: rgba(220, 53, 69, 0.1);
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger);
+  }
+  
+  .icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
