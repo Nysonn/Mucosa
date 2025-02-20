@@ -7,10 +7,6 @@ function NewsDetailPage() {
   const { newsTitle } = useParams();
   const { news, loading, error } = useNewsDetail(newsTitle);
 
-  if (loading) {
-    return <p className={styles.loading}>Loading article...</p>;
-  }
-
   if (error) {
     return <p className={styles.error}>Error: {error.message}</p>;
   }
@@ -49,15 +45,26 @@ function NewsDetailPage() {
           </div>
         </header>
 
-        <figure className={styles.imageContainer}>
-          <img src={news.image} alt={news.title} className={styles.image} />
-        </figure>
+        {loading ? (
+          <div className={styles.loadingContainer}>
+            <div className={styles.loading}>
+              <div className={styles.loadingSpinner} />
+              <span>Loading article...</span>
+            </div>
+          </div>
+        ) : (
+          <>
+            <figure className={styles.imageContainer}>
+              <img src={news.image} alt={news.title} className={styles.image} />
+            </figure>
 
-        <article className={styles.content}>
-          {contentParagraphs.map((paragraph, index) => (
-            <p key={index} className={styles.excerpt}>{paragraph}</p>
-          ))}
-        </article>
+            <article className={styles.content}>
+              {contentParagraphs.map((paragraph, index) => (
+                <p key={index} className={styles.excerpt}>{paragraph}</p>
+              ))}
+            </article>
+          </>
+        )}
       </div>
     </div>
   );
