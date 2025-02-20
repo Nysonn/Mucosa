@@ -1,4 +1,3 @@
-// MessageBox.jsx
 import React from 'react';
 import styles from './ProjectSubmissionModal.module.css';
 

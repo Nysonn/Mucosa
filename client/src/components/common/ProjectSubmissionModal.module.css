@@ -334,19 +334,11 @@
   }
   
   .successBox {
-    background: linear-gradient(
-      135deg,
-      rgba(40, 167, 69, 0.1) 0%,
-      rgba(40, 167, 69, 0.2) 100%
-    );
+    background: var(--color-success);
   }
   
   .errorBox {
-    background: linear-gradient(
-      135deg,
-      rgba(220, 53, 69, 0.1) 0%,
-      rgba(220, 53, 69, 0.2) 100%
-    );
+    background: var(--color-danger);
   }
   
   .icon {
