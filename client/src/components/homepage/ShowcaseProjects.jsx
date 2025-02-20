@@ -6,7 +6,7 @@ import SecondaryButton from '../Buttons/SecondaryButton';
 import useProjects from '../../hooks/useProjects';
 import ProjectSubmissionModal from '../common/ProjectSubmissionModal';
 
-function ProjectCard({ title, description, tech, image, github }) {
+function ProjectCard({ title, description, tech, image, link }) {
   return (
     <div className={styles.projectCard}>
       <div className={styles.imageContainer}>
