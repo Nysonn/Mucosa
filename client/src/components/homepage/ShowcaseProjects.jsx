@@ -5,7 +5,6 @@ import PrimaryButton from '../Buttons/PrimaryButton';
 import SecondaryButton from '../Buttons/SecondaryButton';
 import useProjects from '../../hooks/useProjects';
 import ProjectSubmissionModal from '../common/ProjectSubmissionModal';
-import ProjectCard from '../ProjectCard/ProjectCard';
 
 function ProjectCard({ title, description, tech, image, github }) {
   return (
