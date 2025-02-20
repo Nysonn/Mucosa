@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './ProjectCard.module.css';
+import styles from '../../pages/ProjectsPage.module.css';
 import { highlightText } from '../../utils/highlightText';
 
 function ProjectCard({ title, description, image, link, tech, searchQuery }) {
