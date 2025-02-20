@@ -1,6 +1,6 @@
 // ProjectSubmissionForm.jsx
 import React from 'react';
-import styles from './ProjectSubmissionForm.module.css';
+import styles from './ProjectSubmissionModal.module.css';
 
 function ProjectSubmissionForm({
   formData,

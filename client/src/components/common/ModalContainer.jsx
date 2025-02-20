@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import styles from './ModalContainer.module.css';
+import styles from './ProjectSubmissionModal.module.css';
 
 function ModalContainer({ isOpen, isClosing, onClose, children }) {
   useEffect(() => {
