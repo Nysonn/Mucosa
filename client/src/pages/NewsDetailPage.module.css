@@ -109,7 +109,7 @@
 
 .content {
     font-family: var(--font-primary);
-    color: var(--color-gray-600);
+    color: var(--color-gray-500);
 }
 
 .excerpt {
