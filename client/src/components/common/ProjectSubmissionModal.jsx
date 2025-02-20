@@ -66,6 +66,20 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
     }
   }, [status]);
 
+  // Add useEffect to handle body scroll
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    // Cleanup function to restore scrolling when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   /**
    * Handles input changes (both text and file inputs).
    * @param {Event} e - The change event.
@@ -137,17 +151,8 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
 
   return (
     <>
-      <div
-        className={`${styles.modalOverlay} ${isClosing ? styles.closing : ''}`}
-        aria-hidden={!isOpen}
-      >
-        <div
-          ref={modalRef}
-          className={`${styles.modal} ${isClosing ? styles.closing : ''}`}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
-        >
+      <div className={`${styles.modalOverlay} ${isClosing ? styles.closing : ''}`}>
+        <div className={`${styles.modal} ${isClosing ? styles.closing : ''}`}>
           <button
             className={styles.closeButton}
             onClick={handleClose}
@@ -195,26 +200,27 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
               </div>
             </div>
 
-            <div className={styles.formGroup}>
-              <input
-                type="text"
-                name="category"
-                placeholder="Project Category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <input
-                type="text"
-                name="technologies"
-                placeholder="Technologies Used (comma-separated)"
-                value={formData.technologies}
-                onChange={handleChange}
-                required
-              />
+            <div className={styles.formRow}>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  name="category"
+                  placeholder="Project Category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  name="technologies"
+                  placeholder="Technologies Used (comma-separated)"
+                  value={formData.technologies}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
 
             <div className={styles.formGroup}>
