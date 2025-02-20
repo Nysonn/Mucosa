@@ -200,27 +200,26 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
               </div>
             </div>
 
-            <div className={styles.formRow}>
-              <div className={styles.formGroup}>
-                <input
-                  type="text"
-                  name="category"
-                  placeholder="Project Category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <input
-                  type="text"
-                  name="technologies"
-                  placeholder="Technologies Used (comma-separated)"
-                  value={formData.technologies}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+            <div className={styles.formGroup}>
+              <input
+                type="text"
+                name="category"
+                placeholder="Project Category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <input
+                type="text"
+                name="technologies"
+                placeholder="Technologies Used (comma-separated)"
+                value={formData.technologies}
+                onChange={handleChange}
+                required
+              />
             </div>
 
             <div className={styles.formGroup}>
