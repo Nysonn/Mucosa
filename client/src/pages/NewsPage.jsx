@@ -4,32 +4,9 @@ import styles from './NewsPage.module.css';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import useNews from '../hooks/useNews';
 import { highlightText } from '../utils/highlightText';
+import NewsFilter from '../components/NewsFilter/NewsFilter';
 
-// Filter Component for News
-function NewsFilter({ categories, activeCategory, onCategoryChange }) {
-  return (
-    <div className={styles.filterSection}>
-      {categories.length > 0 ? (
-        categories.map((category) => (
-          <button
-            key={category}
-            className={`${styles.filterButton} ${
-              activeCategory === category ? styles.active : ''
-            }`}
-            onClick={() => onCategoryChange(category)}
-            aria-label={`Filter by ${category}`}
-          >
-            {category.charAt(0).toUpperCase() + category.slice(1)}
-          </button>
-        ))
-      ) : (
-        <p className={styles.noCategories}>No categories available.</p>
-      )}
-    </div>
-  );
-}
-
-// News Card Component
+// News Card Component (remains in this file)
 function NewsCard({ image, category, title, excerpt, date, author, searchQuery }) {
   return (
     <article className={styles.newsCard}>
