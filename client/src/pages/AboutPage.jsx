@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import styles from './AboutPage.module.css';
-import ActiveMembers from '../../src/assets/icons/active-members.png';
+// import ActiveMembers from '../../src/assets/icons/active-members.png';
 import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa';
 import PrimaryButton from '../../src/components/Buttons/PrimaryButton';
 import { useTeamMembers, useImpactMetrics, useContactForm } from '../hooks/useAboutData';
