@@ -32,11 +32,11 @@ function NewsDetailPage() {
               <div className={styles.authorInfo}>
                 <img 
                   src={news.author.avatar || 'default-avatar.png'} 
-                  alt={news.author.username} 
+                  alt={news.author.name} 
                   className={styles.avatar} 
                 />
                 <div className={styles.authorDetails}>
-                  <span className={styles.authorName}>{news.author.username}</span>
+                  <span className={styles.authorName}>{news.author.name}</span>
                   {/* If needed, you can uncomment the line below if a role is provided */}
                   {/* {news.author.role && <span className={styles.authorRole}>{news.author.role}</span>} */}
                 </div>
