@@ -2,6 +2,8 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './NewsDetailPage.module.css';
 import useNewsDetail from '../hooks/useNewsDetail';
+import SEO from '../components/SEO/SEO';
+import MucosaLogo from '../assets/icons/mucosa-logo.png';
 
 function NewsDetailPage() {
   const { newsTitle } = useParams();
@@ -11,38 +13,46 @@ function NewsDetailPage() {
     return <p className={styles.error}>Error: {error.message}</p>;
   }
 
-  if (!news) {
-    return <p className={styles.error}>Article not found!</p>;
-  }
-
-  // Split the content into paragraphs based on newline characters.
-  const contentParagraphs = news.content
-    ? news.content.split(/\r?\n/).filter(paragraph => paragraph.trim() !== "")
-    : [];
+  // Set meta data using news details when available, or use default values.
+  const metaTitle = news ? `${news.title} - News Detail` : 'News Detail';
+  const metaDescription =
+    news && news.content
+      ? news.content.substring(0, 150) + '...'
+      : 'Read the latest news and articles on our platform.';
+  const metaImage = news && news.image ? news.image : MucosaLogo;
 
   return (
     <div className={styles.newsDetailPage}>
+      {/* SEO Meta Data */}
+      <SEO
+        title={metaTitle}
+        description={metaDescription}
+        url={`https://yourwebsite.com/news/${newsTitle}`}
+        image={metaImage}
+      />
       <div className={styles.container}>
         <header className={styles.header}>
-          {news.category && <div className={styles.category}>{news.category}</div>}
-          <h1 className={styles.title}>{news.title}</h1>
-          <div className={styles.meta}>
-            <div className={styles.timeAndAuthor}>
-              <time className={styles.time}>{news.date}</time>
-              <div className={styles.authorInfo}>
-                <img 
-                  src={news.author.avatar || 'default-avatar.png'} 
-                  alt={news.author.name} 
-                  className={styles.avatar} 
-                />
-                <div className={styles.authorDetails}>
-                  <span className={styles.authorName}>{news.author.name}</span>
-                  {/* If needed, you can uncomment the line below if a role is provided */}
-                  {/* {news.author.role && <span className={styles.authorRole}>{news.author.role}</span>} */}
+          {news && news.category && (
+            <div className={styles.category}>{news.category}</div>
+          )}
+          <h1 className={styles.title}>{news ? news.title : 'Loading...'}</h1>
+          {news && (
+            <div className={styles.meta}>
+              <div className={styles.timeAndAuthor}>
+                <time className={styles.time}>{news.date}</time>
+                <div className={styles.authorInfo}>
+                  <img
+                    src={news.author.avatar || 'default-avatar.png'}
+                    alt={news.author.name}
+                    className={styles.avatar}
+                  />
+                  <div className={styles.authorDetails}>
+                    <span className={styles.authorName}>{news.author.name}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </header>
 
         {loading ? (
@@ -52,18 +62,26 @@ function NewsDetailPage() {
               <span>Loading article...</span>
             </div>
           </div>
-        ) : (
+        ) : news ? (
           <>
             <figure className={styles.imageContainer}>
               <img src={news.image} alt={news.title} className={styles.image} />
             </figure>
 
             <article className={styles.content}>
-              {contentParagraphs.map((paragraph, index) => (
-                <p key={index} className={styles.excerpt}>{paragraph}</p>
-              ))}
+              {news.content &&
+                news.content
+                  .split(/\r?\n/)
+                  .filter((paragraph) => paragraph.trim() !== '')
+                  .map((paragraph, index) => (
+                    <p key={index} className={styles.excerpt}>
+                      {paragraph}
+                    </p>
+                  ))}
             </article>
           </>
+        ) : (
+          <p className={styles.error}>Article not found!</p>
         )}
       </div>
     </div>

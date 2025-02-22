@@ -4,6 +4,8 @@ import { useRoadmapData, useJobsData, useResourcesData } from '../hooks/useCaree
 import RoadmapSection from '../components/Career/RoadmapSection';
 import JobCard from '../components/Career/JobCard';
 import ResourceCard from '../components/Career/ResourceCard';
+import SEO from '../components/SEO/SEO';
+import MucosaLogo from '../assets/icons/mucosa-logo.png';
 
 function CareerPage() {
   const [activeTab, setActiveTab] = useState('roadmap');
@@ -15,6 +17,13 @@ function CareerPage() {
 
   return (
     <div className={styles.careerPage}>
+      {/* SEO Meta Data */}
+      <SEO
+        title="Career Development - Explore Career Paths and Opportunities"
+        description="Explore career paths, find job opportunities, and access resources to help you succeed in your professional journey."
+        // url="https://yourwebsite.com/career"
+        image={MucosaLogo}
+      />
       <div className={styles.container}>
         <header className={styles.header}>
           <h1 className={styles.pageTitle}>Career Development</h1>

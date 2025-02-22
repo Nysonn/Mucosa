@@ -5,8 +5,9 @@ import PrimaryButton from '../components/Buttons/PrimaryButton';
 import useNews from '../hooks/useNews';
 import { highlightText } from '../utils/highlightText';
 import NewsFilter from '../components/NewsFilter/NewsFilter';
+import SEO from '../components/SEO/SEO';
+import MucosaLogo from '../assets/icons/mucosa-logo.png';
 
-// News Card Component (remains in this file)
 function NewsCard({ image, category, title, excerpt, date, author, searchQuery }) {
   return (
     <article className={styles.newsCard}>
@@ -34,7 +35,6 @@ function NewsCard({ image, category, title, excerpt, date, author, searchQuery }
   );
 }
 
-// News Page Component
 function NewsPage() {
   const {
     news,
@@ -54,6 +54,13 @@ function NewsPage() {
 
   return (
     <div className={styles.newsPage}>
+      {/* SEO Meta Data */}
+      <SEO
+        title="Latest News - Stay Updated with MUCOSA Community"
+        description="Stay updated with the latest news, announcements, and stories from the MUCOSA community."
+        // url="https://yourwebsite.com/news"
+        image={MucosaLogo}
+      />
       <div className={styles.container}>
         <header className={styles.header}>
           <h1 className={styles.pageTitle}>Latest News</h1>

@@ -2,6 +2,8 @@ import React from 'react';
 import styles from './EventsPage.module.css';
 import useEvents from '../hooks/useEvents';
 import EventCard from '../components/EventCard/EventCard';
+import SEO from '../components/SEO/SEO';
+import MucosaLogo from '../assets/icons/mucosa-logo.png';
 
 export default function EventsPage() {
   const {
@@ -17,6 +19,13 @@ export default function EventsPage() {
 
   return (
     <div className={styles.eventsPage}>
+      {/* SEO Meta Data */}
+      <SEO
+        title="Upcoming Events - Tech Workshops, Meetups and More"
+        description="Discover and participate in exciting tech events, workshops, and meetups with MUCOSA. Stay updated with the latest happenings."
+        url="https://yourwebsite.com/events"
+        image={MucosaLogo}
+      />
       <div className={styles.container}>
         <header className={styles.header}>
           <h1 className={styles.pageTitle}>Upcoming Events</h1>

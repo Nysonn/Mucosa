@@ -2,6 +2,8 @@ import React from 'react';
 import styles from './ProjectsPage.module.css';
 import useProjects from '../hooks/useProjects';
 import ProjectCard from '../components/ProjectCard/ProjectCard';
+import SEO from '../components/SEO/SEO';
+import MucosaLogo from '../assets/icons/mucosa-logo.png';
 
 export default function ProjectsPage() {
   // Destructure the required state and functions from the custom hook
@@ -18,6 +20,13 @@ export default function ProjectsPage() {
 
   return (
     <div className={styles.projectsPage}>
+      {/* SEO Meta Data */}
+      <SEO
+        title="Community Projects - MUCOSA"
+        description="Explore projects created by members of the MUCOSA community. Discover innovative ideas and collaborative works."
+        // url="https://yourwebsite.com/projects"
+        image={MucosaLogo}
+      />
       <div className={styles.container}>
         <header className={styles.header}>
           <h1 className={styles.pageTitle}>Community Projects</h1>
@@ -38,7 +47,7 @@ export default function ProjectsPage() {
 
           {/* Category Filters */}
           <div className={styles.categoryFilters}>
-            {categories.map(category => (
+            {categories.map((category) => (
               <button
                 key={category}
                 className={`${styles.categoryButton} ${
