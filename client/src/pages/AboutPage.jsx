@@ -5,6 +5,8 @@ import ImpactMetric from '../components/About/ImpactMetric';
 import ContactForm from '../components/About/ContactForm';
 import TeamMember from '../components/About/TeamMember';
 import { useTeamMembers, useImpactMetrics } from '../hooks/useAboutData';
+import SEO from '../components/SEO/SEO';
+import MucosaLogo from '../assets/icons/mucosa-logo.png';
 
 function AboutPage() {
   const { teamMembers, loading: teamLoading, error: teamError } = useTeamMembers();
@@ -12,6 +14,13 @@ function AboutPage() {
 
   return (
     <div className={styles.aboutPage}>
+      {/* SEO Meta Data */}
+      <SEO
+        title="About MUCOSA - Our Community, Mission, and Team"
+        description="Learn about our community, mission, team, and the impact we create at MUCOSA. Discover who we are and what drives us."
+        // url="https://yourwebsite.com/about"
+        image={MucosaLogo}
+      />
       <div className={styles.container}>
         <header className={styles.header}>
           <h1 className={styles.pageTitle}>About MUCOSA</h1>
