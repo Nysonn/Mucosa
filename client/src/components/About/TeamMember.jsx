@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from '../../pages/AboutPage.module.css';
-import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa';
+import { FaLinkedin, FaTwitter, FaGithub, FaQuora } from 'react-icons/fa';
 
 function TeamMember({ name, role, image, bio, socials }) {
   return (
@@ -25,6 +25,9 @@ function TeamMember({ name, role, image, bio, socials }) {
               case 'github':
                 IconComponent = FaGithub;
                 break;
+                case 'quora':
+                  IconComponent = FaQuora;
+                  break;
               default:
                 IconComponent = null;
             }
