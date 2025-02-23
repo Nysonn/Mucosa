@@ -301,16 +301,15 @@
   }
 
   .category {
-    top: var(--spacing-lg);
-    left: var(--spacing-lg);
-    background: var(--color-primary-dark);
+    position: absolute;
+    top: var(--spacing-md);
+    left: var(--spacing-md);
+    background: var(--color-primary);
     color: var(--color-secondary);
-    padding: 8px 16px;
-    border-radius: 15px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 4px var(--spacing-sm);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
   }
 
   .carouselSlide {
