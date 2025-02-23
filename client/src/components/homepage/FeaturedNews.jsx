@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './FeaturedNews.module.css';
 import useNews from '../../hooks/useNews';
 import NewsCard from '../NewsCard/NewsCard';
@@ -6,50 +6,69 @@ import NewsCard from '../NewsCard/NewsCard';
 function FeaturedNews() {
   const { news, loading, error } = useNews();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef(null);
-  const transitioningRef = useRef(false); // Avoid unnecessary re-renders
 
-  // Memoize featured news
-  const featuredNews = useMemo(() => {
-    if (news.length === 0) return [];
-    return [...news, news[0]]; // Add first item at the end for smooth looping
-  }, [news]);
+  // Map news and add duplicate of first item at the end
+  const featuredNews = [
+    ...news.map(item => ({
+      category: item.category,
+      image: item.image,
+      excerpt: item.excerpt,
+    })),
+    // Add first item again at the end
+    news[0] && {
+      category: news[0].category,
+      image: news[0].image,
+      excerpt: news[0].excerpt,
+    }
+  ].filter(Boolean); // Remove undefined if news is empty
 
   const handleSlideChange = (next) => {
-    if (transitioningRef.current) return; // Prevent multiple calls during transition
-    transitioningRef.current = true;
+    setIsTransitioning(true);
     setCurrentSlide(next);
 
+    // If we're on the last slide (duplicate), quickly reset to first after transition
     if (next === featuredNews.length - 1) {
       setTimeout(() => {
-        transitioningRef.current = false;
+        setIsTransitioning(false);
         setCurrentSlide(0);
-      }, 500);
+      }, 500); // Match this with your transition duration
     } else {
       setTimeout(() => {
-        transitioningRef.current = false;
+        setIsTransitioning(false);
       }, 500);
     }
   };
 
   const startInterval = () => {
-    stopInterval();
+    stopInterval(); // Clear any existing interval first
     intervalRef.current = setInterval(() => {
-      handleSlideChange((prev) => (prev + 1) % featuredNews.length);
+      handleSlideChange(currentSlide + 1);
     }, 3000);
   };
 
   const stopInterval = () => {
-    clearInterval(intervalRef.current);
+    if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
   useEffect(() => {
-    if (featuredNews.length > 1 && !isHovered) {
+    if (featuredNews.length > 0 && !isHovered) {
       startInterval();
     }
-    return stopInterval;
-  }, [featuredNews.length, isHovered]);
+    return () => stopInterval();
+  }, [featuredNews.length]);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    stopInterval();
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    startInterval();
+  };
 
   if (loading) return <p>Loading news...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -64,18 +83,24 @@ function FeaturedNews() {
             Stay updated with the latest from our community
           </p>
         </div>
-
-        <div
-          className={styles.carousel}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <div
-            className={`${styles.carouselTrack} ${transitioningRef.current ? styles.transitioning : ''}`}
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        
+        <div className={styles.carousel}>
+          <div 
+            className={styles.carouselTrack}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              transition: isTransitioning ? 'transform 0.5s ease' : 'none'
+            }}
           >
             {featuredNews.map((item, index) => (
-              <div key={index} className={styles.carouselSlide}>
+              <div
+                key={index}
+                className={styles.carouselSlide}
+                style={{
+                  transform: `translateX(${(index - currentSlide) * 100}%)`,
+                }}
+              >
                 <NewsCard {...item} />
               </div>
             ))}
@@ -83,6 +108,7 @@ function FeaturedNews() {
         </div>
 
         <div className={styles.indicators}>
+          {/* Only show indicators for original slides (exclude duplicate) */}
           {featuredNews.slice(0, -1).map((_, index) => (
             <button
               key={index}
