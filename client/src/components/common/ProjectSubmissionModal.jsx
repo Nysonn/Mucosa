@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ModalContainer from './ModalContainer';
 import ProjectSubmissionForm from './ProjectSubmissionForm';
-import MessageBox from './MessageBox';
 import useSubmitProject from '../../hooks/useSubmitProject';
 import styles from './ProjectSubmissionModal.module.css';
 
@@ -73,7 +72,7 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
         handleSubmit={handleSubmit}
         imagePreview={imagePreview}
         status={status}
-        isSending={status === 'sending'}
+        isSending={status === 'loading'}
       />
       {showMessage && status === 'success' && (
         <div className={`${styles.messageBox} ${styles.successBox}`}>

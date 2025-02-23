@@ -84,12 +84,11 @@ function ContactForm() {
         />
       </div>
       <PrimaryButton 
-        type="submit" 
-        disabled={status === 'sending'}
-      >
-        {status === 'sending' ? 'Sending...' : 'Send Message'}
-      </PrimaryButton>
-
+          type="submit" 
+          disabled={status === 'loading'}
+        >
+          {status === 'loading' ? 'Sending...' : 'Send Message'}
+        </PrimaryButton>
       {showMessage && status === 'success' && (
         <div className={`${styles.messageBox} ${styles.successBox}`}>
           <div className={styles.messageContent}>
