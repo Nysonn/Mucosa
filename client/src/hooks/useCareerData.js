@@ -1,82 +1,88 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
-// Hook to fetch roadmap data
+/**
+ * Hook to fetch roadmap data from the backend using TanStack Query.
+ */
 export function useRoadmapData() {
-  const [roadmapData, setRoadmapData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch('http://localhost:8000/career/roadmap')
-      .then(response => {
+  const {
+    data: roadmapData,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ['roadmapData'],
+    queryFn: async ({ signal }) => {
+      try {
+        const response = await fetch('http://localhost:8000/career/roadmap', { signal });
         if (!response.ok) {
           throw new Error('Failed to fetch roadmap data');
         }
         return response.json();
-      })
-      .then(data => {
-        setRoadmapData(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err);
-        setLoading(false);
-      });
-  }, []);
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          return Promise.reject(new Error('Fetch aborted'));
+        }
+        throw err;
+      }
+    },
+  });
 
   return { roadmapData, loading, error };
 }
 
-// Hook to fetch job opportunities data
+/**
+ * Hook to fetch job opportunities data from the backend using TanStack Query.
+ */
 export function useJobsData() {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch('http://localhost:8000/career/jobs')
-      .then(response => {
+  const {
+    data: jobs,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ['jobsData'],
+    queryFn: async ({ signal }) => {
+      try {
+        const response = await fetch('http://localhost:8000/career/jobs', { signal });
         if (!response.ok) {
           throw new Error('Failed to fetch job data');
         }
         return response.json();
-      })
-      .then(data => {
-        setJobs(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err);
-        setLoading(false);
-      });
-  }, []);
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          return Promise.reject(new Error('Fetch aborted'));
+        }
+        throw err;
+      }
+    },
+  });
 
   return { jobs, loading, error };
 }
 
-// Hook to fetch resources data
+/**
+ * Hook to fetch resources data from the backend using TanStack Query.
+ */
 export function useResourcesData() {
-  const [resources, setResources] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch('http://localhost:8000/career/resources')
-      .then(response => {
+  const {
+    data: resources,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ['resourcesData'],
+    queryFn: async ({ signal }) => {
+      try {
+        const response = await fetch('http://localhost:8000/career/resources', { signal });
         if (!response.ok) {
           throw new Error('Failed to fetch resources data');
         }
         return response.json();
-      })
-      .then(data => {
-        setResources(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err);
-        setLoading(false);
-      });
-  }, []);
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          return Promise.reject(new Error('Fetch aborted'));
+        }
+        throw err;
+      }
+    },
+  });
 
   return { resources, loading, error };
 }

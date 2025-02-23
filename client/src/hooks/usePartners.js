@@ -1,27 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 export function usePartners() {
-  const [partners, setPartners] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch('http://localhost:8000/partners/partners')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch partners data');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setPartners(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err);
-        setLoading(false);
-      });
-  }, []);
+  const {
+    data: partners = [],
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ['partners'],
+    queryFn: async ({ signal }) => {
+      const response = await fetch('http://localhost:8000/partners/partners', { signal });
+      if (!response.ok) {
+        throw new Error('Failed to fetch partners data');
+      }
+      return response.json();
+    },
+  });
 
   return { partners, loading, error };
 }

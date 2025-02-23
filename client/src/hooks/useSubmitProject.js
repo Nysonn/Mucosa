@@ -1,18 +1,8 @@
-import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 
 const useSubmitProject = () => {
-  const [status, setStatus] = useState('');
-
-  /**
-   * submitProject
-   * Sends the project submission data to the backend using multipart/form-data.
-   *
-   * @param {Object} data - The project submission data.
-   * @returns {Object|null} - The backend response data or null if an error occurs.
-   */
-  const submitProject = async (data) => {
-    setStatus('sending');
-    try {
+  const mutation = useMutation({
+    mutationFn: async (data) => {
       // Create a FormData instance to handle file upload alongside other fields.
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
@@ -30,15 +20,11 @@ const useSubmitProject = () => {
         throw new Error('Failed to submit project');
       }
 
-      setStatus('success');
-      return await response.json();
-    } catch (err) {
-      setStatus('error');
-      return null;
-    }
-  };
+      return response.json();
+    },
+  });
 
-  return { status, submitProject };
+  return { status: mutation.status, submitProject: mutation.mutate };
 };
 
 export default useSubmitProject;

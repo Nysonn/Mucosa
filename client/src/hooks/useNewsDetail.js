@@ -1,37 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 function useNewsDetail(newsTitle) {
-  const [news, setNews] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (!newsTitle) {
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    // Construct the URL using the newsTitle slug.
-    fetch(`http://localhost:8000/news/news/${newsTitle}/`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch the news article.');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setNews(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Error fetching news article:', err);
-        setError(err);
-        setLoading(false);
-      });
-  }, [newsTitle]);
+  const {
+    data: news,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ['newsDetail', newsTitle],
+    queryFn: async ({ signal }) => {
+      const response = await fetch(`http://localhost:8000/news/news/${newsTitle}/`, { signal });
+      if (!response.ok) {
+        throw new Error('Failed to fetch the news article.');
+      }
+      return response.json();
+    },
+    enabled: Boolean(newsTitle),
+  });
 
   return { news, loading, error };
 }
