@@ -17,27 +17,20 @@ function ContactForm() {
     if (status === 'success' || status === 'error') {
       setShowMessage(true);
       
-      if (status === 'success') {
-        const messageTimer = setTimeout(() => {
-          setShowMessage(false);
+      const timer = setTimeout(() => {
+        setShowMessage(false);
+        if (status === 'success') {
           setFormData({ name: '', email: '', subject: '', message: '' });
-        }, 3000);
-        
-        return () => clearTimeout(messageTimer);
-      }
+        }
+      }, 3000);
       
-      if (status === 'error') {
-        const messageTimer = setTimeout(() => {
-          setShowMessage(false);
-        }, 3000);
-        
-        return () => clearTimeout(messageTimer);
-      }
+      return () => clearTimeout(timer);
     }
   }, [status]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Use await with mutateAsync so that status updates to 'loading' properly.
     await submitForm(formData);
   };
 
@@ -86,9 +79,10 @@ function ContactForm() {
       <PrimaryButton 
           type="submit" 
           disabled={status === 'loading'}
-        >
+      >
           {status === 'loading' ? 'Sending...' : 'Send Message'}
-        </PrimaryButton>
+      </PrimaryButton>
+      
       {showMessage && status === 'success' && (
         <div className={`${styles.messageBox} ${styles.successBox}`}>
           <div className={styles.messageContent}>
@@ -100,7 +94,6 @@ function ContactForm() {
           </div>
         </div>
       )}
-
       {showMessage && status === 'error' && (
         <div className={`${styles.messageBox} ${styles.errorBox}`}>
           <div className={styles.messageContent}>

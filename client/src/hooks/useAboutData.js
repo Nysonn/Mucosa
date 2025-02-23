@@ -64,6 +64,7 @@ export function useImpactMetrics() {
 /**
  * Hook to handle contact form submissions using TanStack Query's useMutation.
  */
+
 export function useContactForm() {
   const mutation = useMutation({
     mutationFn: async (formData) => {
@@ -81,5 +82,7 @@ export function useContactForm() {
     },
   });
 
-  return { status: mutation.status, submitForm: mutation.mutate };
+  // Use mutateAsync so we can await it and correctly update the status.
+  return { status: mutation.status, submitForm: mutation.mutateAsync };
 }
+
