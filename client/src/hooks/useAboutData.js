@@ -8,8 +8,8 @@ export function useTeamMembers() {
     data: teamMembers,
     isLoading: loading,
     error,
-  } = useQuery(['teamMembers'], async () => {
-    const response = await fetch('http://localhost:8000/about/team');
+  } = useQuery(['teamMembers'], async ({ signal }) => {
+    const response = await fetch('http://localhost:8000/about/team', { signal });
     if (!response.ok) {
       throw new Error('Failed to fetch team members');
     }
@@ -27,8 +27,8 @@ export function useImpactMetrics() {
     data: impactMetrics,
     isLoading: loading,
     error,
-  } = useQuery(['impactMetrics'], async () => {
-    const response = await fetch('http://localhost:8000/about/impact');
+  } = useQuery(['impactMetrics'], async ({ signal }) => {
+    const response = await fetch('http://localhost:8000/about/impact', { signal });
     if (!response.ok) {
       throw new Error('Failed to fetch impact metrics');
     }
