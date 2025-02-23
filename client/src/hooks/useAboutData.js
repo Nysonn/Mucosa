@@ -11,11 +11,21 @@ export function useTeamMembers() {
   } = useQuery({
     queryKey: ['teamMembers'],
     queryFn: async ({ signal }) => {
-      const response = await fetch('http://localhost:8000/about/team', { signal });
-      if (!response.ok) {
-        throw new Error('Failed to fetch team members');
+      try {
+        const response = await fetch('http://localhost:8000/about/team', { signal });
+        if (!response.ok) {
+          throw new Error('Failed to fetch team members');
+        }
+        return response.json();
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          // Option 1: Silently ignore aborted requests by returning a value or rejecting with a special error
+          return Promise.reject(new Error('Fetch aborted'));
+          // Alternatively, you could return a default value:
+          // return [];
+        }
+        throw err;
       }
-      return response.json();
     },
   });
 
@@ -33,11 +43,18 @@ export function useImpactMetrics() {
   } = useQuery({
     queryKey: ['impactMetrics'],
     queryFn: async ({ signal }) => {
-      const response = await fetch('http://localhost:8000/about/impact', { signal });
-      if (!response.ok) {
-        throw new Error('Failed to fetch impact metrics');
+      try {
+        const response = await fetch('http://localhost:8000/about/impact', { signal });
+        if (!response.ok) {
+          throw new Error('Failed to fetch impact metrics');
+        }
+        return response.json();
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          return Promise.reject(new Error('Fetch aborted'));
+        }
+        throw err;
       }
-      return response.json();
     },
   });
 
@@ -55,7 +72,7 @@ export function useContactForm() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
       if (!response.ok) {
         throw new Error('Failed to send message');
