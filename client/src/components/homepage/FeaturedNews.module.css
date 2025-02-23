@@ -241,6 +241,83 @@
 
 @media (max-width: 768px) {
   .sectionTitle {
-    font-size : 2.0rem;
+    font-size: 2rem;
+  }
+
+  .carouselTrack {
+    height: auto;
+    min-height: 400px;
+  }
+
+  .newsCard {
+    background: var(--color-white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    height: auto;
+  }
+
+  .imageContainer {
+    position: relative;
+    padding-top: 56.25%;
+    overflow: hidden;
+  }
+
+  .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.3s ease;
+  }
+
+  .imageOverlay {
+    background: linear-gradient(to bottom, 
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.7) 100%
+    );
+    transform: none;
+    opacity: 1;
+  }
+
+  .overlayText {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: var(--spacing-md);
+    font-size: 1.2rem;
+    text-align: left;
+    transform: none;
+    color: var(--color-white);
+  }
+
+  .category {
+    top: var(--spacing-md);
+    left: var(--spacing-md);
+    background: var(--color-primary);
+    color: var(--color-secondary);
+    padding: 4px var(--spacing-sm);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    z-index: 3;
+  }
+
+  .carouselSlide {
+    padding: var(--spacing-sm);
+  }
+
+  .indicators {
+    margin-top: var(--spacing-md);
+  }
+
+  .indicator {
+    width: 8px;
+    height: 8px;
   }
 }
