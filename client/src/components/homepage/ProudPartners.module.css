@@ -149,11 +149,13 @@
 
   .carouselContainer {
     display: block;
+    margin: var(--spacing-lg) 0;
   }
 
   .partnerLogo {
     flex: 0 0 200px;
     margin: 0 var(--spacing-md);
+    animation: none;
   }
 }
 
@@ -161,19 +163,7 @@
   .title {
     font-size: 2rem;
   }
-
-  .logosGrid {
-    display: none;
-  }
-
-  .carouselContainer {
-    display: block;
-  }
-
-  .partnerLogo {
-    flex: 0 0 200px;
-    margin: 0 var(--spacing-md);
-  }
+  
 }
 
 .carouselContainer {
@@ -181,18 +171,24 @@
   overflow: hidden;
   width: 100%;
   position: relative;
+  touch-action: pan-y pinch-zoom;
+  cursor: grab;
+}
+
+.carouselContainer:active {
+  cursor: grabbing;
 }
 
 .carouselTrack {
   display: flex;
-  animation: scroll 20s linear infinite;
+  transition: transform 0.3s ease-out;
+  will-change: transform;
 }
 
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
+.carouselTrack.animating {
+  transition: transform 20s linear;
+}
+
+.carouselTrack.dragging {
+  transition: none;
 }

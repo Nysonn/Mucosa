@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react';
 import styles from './ProudPartners.module.css';
 import PrimaryButton from '../Buttons/PrimaryButton';
 import { Link } from "react-router-dom";
@@ -15,16 +16,80 @@ function PartnerLogo({ name, logo, website }) {
         className={styles.logo}
         style={{ backgroundImage: `url(${logo})` }}
         title={name}
+        loading="lazy"
       />
     </a>
   );
 }
 
 function ProudPartners() {
-  // Use the custom hook to fetch partners data
   const { partners, loading, error } = usePartners();
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(true);
+  const carouselRef = useRef(null);
+  const trackRef = useRef(null);
 
-  // Duplicate partners array for infinite scroll effect
+  // Handle automatic scrolling
+  useEffect(() => {
+    if (!isAnimating || isDragging) return;
+
+    const resetScroll = () => {
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'none';
+        trackRef.current.style.transform = 'translateX(0)';
+        // Force reflow
+        trackRef.current.offsetHeight;
+        trackRef.current.style.transition = 'transform 20s linear';
+        trackRef.current.style.transform = 'translateX(-50%)';
+      }
+    };
+
+    resetScroll();
+    const interval = setInterval(resetScroll, 20000);
+
+    return () => clearInterval(interval);
+  }, [isAnimating, isDragging]);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setIsAnimating(false);
+    setStartX(e.pageX - carouselRef.current.offsetLeft);
+    setScrollLeft(carouselRef.current.scrollLeft);
+  };
+
+  const handleTouchStart = (e) => {
+    setIsDragging(true);
+    setIsAnimating(false);
+    setStartX(e.touches[0].pageX - carouselRef.current.offsetLeft);
+    setScrollLeft(carouselRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - carouselRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translateX(${walk}px)`;
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging) return;
+    const x = e.touches[0].pageX - carouselRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translateX(${walk}px)`;
+    }
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    setTimeout(() => setIsAnimating(true), 100);
+  };
+
   const duplicatedPartners = partners ? [...partners, ...partners] : [];
 
   return (
@@ -49,8 +114,21 @@ function ProudPartners() {
         </div>
 
         {/* Carousel view for mobile */}
-        <div className={styles.carouselContainer}>
-          <div className={styles.carouselTrack}>
+        <div 
+          ref={carouselRef}
+          className={styles.carouselContainer}
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+          onMouseMove={handleMouseMove}
+          onTouchMove={handleTouchMove}
+          onMouseUp={handleDragEnd}
+          onMouseLeave={handleDragEnd}
+          onTouchEnd={handleDragEnd}
+        >
+          <div 
+            ref={trackRef}
+            className={`${styles.carouselTrack} ${isDragging ? styles.dragging : ''} ${isAnimating ? styles.animating : ''}`}
+          >
             {!loading && !error && duplicatedPartners.map((partner, index) => (
               <PartnerLogo key={`carousel-${index}`} {...partner} />
             ))}
