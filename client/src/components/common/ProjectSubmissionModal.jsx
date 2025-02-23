@@ -13,7 +13,9 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
   const firstInputRef = useRef(null);
 
   useEffect(() => {
-    if (isOpen && firstInputRef.current) firstInputRef.current.focus();
+    if (isOpen && firstInputRef.current) {
+      firstInputRef.current.focus();
+    }
   }, [isOpen]);
 
   useEffect(() => {
@@ -72,7 +74,7 @@ function ProjectSubmissionModal({ isOpen, onClose }) {
         handleSubmit={handleSubmit}
         imagePreview={imagePreview}
         status={status}
-        isSending={status === 'loading'}
+        isSending={status === 'sending'} 
       />
       {showMessage && status === 'success' && (
         <div className={`${styles.messageBox} ${styles.successBox}`}>
