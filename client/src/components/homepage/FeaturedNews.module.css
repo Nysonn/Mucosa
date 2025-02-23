@@ -246,21 +246,20 @@
 
   .carouselTrack {
     height: auto;
-    min-height: 400px;
+    min-height: 450px;
   }
 
   .newsCard {
     background: var(--color-white);
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     height: auto;
   }
 
   .imageContainer {
     position: relative;
-    padding-top: 56.25%;
+    padding-top: 75%;
     overflow: hidden;
   }
 
@@ -272,52 +271,66 @@
     height: 100%;
     background-size: cover;
     background-position: center;
-    transition: transform 0.3s ease;
+    transition: transform 0.5s ease;
   }
 
   .imageOverlay {
-    background: linear-gradient(to bottom, 
+    background: linear-gradient(180deg, 
       rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0.7) 100%
+      rgba(0, 0, 0, 0.3) 40%,
+      rgba(0, 0, 0, 0.8) 100%
     );
-    transform: none;
     opacity: 1;
+    transform: none;
+    padding: var(--spacing-lg);
+    display: flex;
+    align-items: flex-end;
   }
 
   .overlayText {
-    position: absolute;
+    position: relative;
     bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: var(--spacing-md);
-    font-size: 1.2rem;
+    padding: 0;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    font-weight: 500;
     text-align: left;
     transform: none;
     color: var(--color-white);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
   .category {
-    top: var(--spacing-md);
-    left: var(--spacing-md);
-    background: var(--color-primary);
+    top: var(--spacing-lg);
+    left: var(--spacing-lg);
+    background: var(--color-white);
     color: var(--color-secondary);
-    padding: 4px var(--spacing-sm);
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    z-index: 3;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .carouselSlide {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-md);
   }
 
   .indicators {
-    margin-top: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    gap: var(--spacing-md);
   }
 
   .indicator {
-    width: 8px;
-    height: 8px;
+    width: 30px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .indicator.active {
+    width: 45px;
   }
 }
