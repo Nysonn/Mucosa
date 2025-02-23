@@ -193,19 +193,3 @@
   transition: none;
 }
 
-@media (max-width: var(--breakpoint-sm)) {
-  .logosGrid {
-    display: none;
-  }
-
-  .carouselContainer {
-    display: block;
-    margin: var(--spacing-lg) 0;
-  }
-
-  .partnerLogo {
-    flex: 0 0 200px;
-    margin: 0 var(--spacing-md);
-    animation: none;
-  }
-}

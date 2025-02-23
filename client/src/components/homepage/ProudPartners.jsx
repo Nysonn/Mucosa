@@ -1,21 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styles from './ProudPartners.module.css';
 import PrimaryButton from '../Buttons/PrimaryButton';
 import { Link } from "react-router-dom";
-import { usePartners } from '../../hooks/usePartners';
-
-// Custom hook to detect mobile view (adjust breakpoint as needed)
-function useIsMobile(breakpoint = 768) {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < breakpoint);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < breakpoint);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [breakpoint]);
-
-  return isMobile;
-}
+import { usePartners } from '../../hooks/usePartners'; 
 
 function PartnerLogo({ name, logo, website }) {
   return (
@@ -37,16 +24,16 @@ function PartnerLogo({ name, logo, website }) {
 
 function ProudPartners() {
   const { partners, loading, error } = usePartners();
-  const isMobile = useIsMobile(768); // Define your mobile breakpoint here
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
   const carouselRef = useRef(null);
   const trackRef = useRef(null);
 
-  // Handle automatic scrolling for mobile only
+  // Handle automatic scrolling
   useEffect(() => {
-    if (!isMobile || !isAnimating || isDragging) return;
+    if (!isAnimating || isDragging) return;
 
     const resetScroll = () => {
       if (trackRef.current) {
@@ -63,18 +50,20 @@ function ProudPartners() {
     const interval = setInterval(resetScroll, 20000);
 
     return () => clearInterval(interval);
-  }, [isMobile, isAnimating, isDragging]);
+  }, [isAnimating, isDragging]);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setIsAnimating(false);
     setStartX(e.pageX - carouselRef.current.offsetLeft);
+    setScrollLeft(carouselRef.current.scrollLeft);
   };
 
   const handleTouchStart = (e) => {
     setIsDragging(true);
     setIsAnimating(false);
     setStartX(e.touches[0].pageX - carouselRef.current.offsetLeft);
+    setScrollLeft(carouselRef.current.scrollLeft);
   };
 
   const handleMouseMove = (e) => {
@@ -117,45 +106,43 @@ function ProudPartners() {
         {loading && <p>Loading partners...</p>}
         {error && <p>Error: {error.message}</p>}
         
-        {isMobile ? (
-          // Carousel view for mobile
+        {/* Grid view for desktop */}
+        <div className={styles.logosGrid}>
+          {!loading && !error && partners.map((partner, index) => (
+            <PartnerLogo key={`grid-${index}`} {...partner} />
+          ))}
+        </div>
+
+        {/* Carousel view for mobile */}
+        <div 
+          ref={carouselRef}
+          className={styles.carouselContainer}
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+          onMouseMove={handleMouseMove}
+          onTouchMove={handleTouchMove}
+          onMouseUp={handleDragEnd}
+          onMouseLeave={handleDragEnd}
+          onTouchEnd={handleDragEnd}
+        >
           <div 
-            ref={carouselRef}
-            className={styles.carouselContainer}
-            onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
-            onMouseMove={handleMouseMove}
-            onTouchMove={handleTouchMove}
-            onMouseUp={handleDragEnd}
-            onMouseLeave={handleDragEnd}
-            onTouchEnd={handleDragEnd}
+            ref={trackRef}
+            className={`${styles.carouselTrack} ${isDragging ? styles.dragging : ''} ${isAnimating ? styles.animating : ''}`}
           >
-            <div 
-              ref={trackRef}
-              className={`${styles.carouselTrack} ${isDragging ? styles.dragging : ''} ${isAnimating ? styles.animating : ''}`}
-            >
-              {!loading && !error && duplicatedPartners.map((partner, index) => (
-                <PartnerLogo key={`carousel-${index}`} {...partner} />
-              ))}
-            </div>
-          </div>
-        ) : (
-          // Grid view for desktop
-          <div className={styles.logosGrid}>
-            {!loading && !error && partners.map((partner, index) => (
-              <PartnerLogo key={`grid-${index}`} {...partner} />
+            {!loading && !error && duplicatedPartners.map((partner, index) => (
+              <PartnerLogo key={`carousel-${index}`} {...partner} />
             ))}
           </div>
-        )}
+        </div>
 
         <div className={styles.cta}>
           <p className={styles.ctaText}>
             Interested in partnering with MUCOSA?
           </p>
           <Link to="/about">
-            <PrimaryButton>
-              Become a Partner
-            </PrimaryButton>
+              <PrimaryButton>
+                Become a Partner
+              </PrimaryButton>
           </Link>
         </div>
       </div>
