@@ -161,6 +161,19 @@
   .title {
     font-size: 2rem;
   }
+
+  .logosGrid {
+    display: none;
+  }
+
+  .carouselContainer {
+    display: block;
+  }
+
+  .partnerLogo {
+    flex: 0 0 200px;
+    margin: 0 var(--spacing-md);
+  }
 }
 
 .carouselContainer {
