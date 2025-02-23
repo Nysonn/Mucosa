@@ -5,50 +5,20 @@ import NewsCard from '../NewsCard/NewsCard';
 
 function FeaturedNews() {
   const { news, loading, error } = useNews();
-  // Start with the first real slide (index 1)
-  const [currentSlide, setCurrentSlide] = useState(1);
-  const [isTransitioning, setIsTransitioning] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef(null);
 
-  // Create extended slides with a clone of the last slide at the beginning and a clone of the first slide at the end
-  const extendedNews = [];
-  if (news.length > 0) {
-    // Clone of the last slide
-    extendedNews.push({
-      category: news[news.length - 1].category,
-      image: news[news.length - 1].image,
-      excerpt: news[news.length - 1].excerpt,
-    });
-    // Original news slides
-    news.forEach(item => {
-      extendedNews.push({
-        category: item.category,
-        image: item.image,
-        excerpt: item.excerpt,
-      });
-    });
-    // Clone of the first slide
-    extendedNews.push({
-      category: news[0].category,
-      image: news[0].image,
-      excerpt: news[0].excerpt,
-    });
-  }
+  // Map news to include only necessary properties.
+  const featuredNews = news.map(item => ({
+    category: item.category,
+    image: item.image,
+    excerpt: item.excerpt,
+  }));
 
-  // Function to change slides
-  const handleSlideChange = (next) => {
-    setCurrentSlide(next);
-    setIsTransitioning(true);
-  };
-
-  // Automatic slide change interval
   const startInterval = () => {
-    stopInterval(); // Clear any existing interval first
     intervalRef.current = setInterval(() => {
-      // Increment the slide index
-      setCurrentSlide(prev => prev + 1);
-      setIsTransitioning(true);
+      setCurrentSlide(prev => (prev + 1) % featuredNews.length);
     }, 3000);
   };
 
@@ -57,25 +27,11 @@ function FeaturedNews() {
   };
 
   useEffect(() => {
-    if (extendedNews.length > 0 && !isHovered) {
+    if (featuredNews.length > 0) {
       startInterval();
     }
     return () => stopInterval();
-  }, [extendedNews.length, isHovered]);
-
-  // Adjust the slide index once the transition ends to create a seamless loop
-  const handleTransitionEnd = () => {
-    // If on the clone of the first slide, jump to the first real slide
-    if (currentSlide === extendedNews.length - 1) {
-      setIsTransitioning(false);
-      setCurrentSlide(1);
-    }
-    // If on the clone of the last slide, jump to the last real slide
-    else if (currentSlide === 0) {
-      setIsTransitioning(false);
-      setCurrentSlide(extendedNews.length - 2);
-    }
-  };
+  }, [featuredNews.length]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -89,7 +45,7 @@ function FeaturedNews() {
 
   if (loading) return <p>Loading news...</p>;
   if (error) return <p>Error: {error.message}</p>;
-  if (extendedNews.length === 0) return <p>No news available.</p>;
+  if (featuredNews.length === 0) return <p>No news available.</p>;
 
   return (
     <section className={styles.newsSection}>
@@ -106,16 +62,14 @@ function FeaturedNews() {
             className={styles.carouselTrack}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            onTransitionEnd={handleTransitionEnd}
-            style={{
-              transform: `translateX(-${currentSlide * 100}%)`,
-              transition: isTransitioning ? 'transform 0.5s ease' : 'none',
-            }}
           >
-            {extendedNews.map((item, index) => (
+            {featuredNews.map((item, index) => (
               <div
                 key={index}
                 className={styles.carouselSlide}
+                style={{
+                  transform: `translateX(${(index - currentSlide) * 100}%)`,
+                }}
               >
                 <NewsCard {...item} />
               </div>
@@ -124,12 +78,11 @@ function FeaturedNews() {
         </div>
 
         <div className={styles.indicators}>
-          {/* Render indicators for only the original slides */}
-          {news.map((_, index) => (
+          {featuredNews.map((_, index) => (
             <button
               key={index}
-              className={`${styles.indicator} ${currentSlide === index + 1 ? styles.active : ''}`}
-              onClick={() => handleSlideChange(index + 1)}
+              className={`${styles.indicator} ${index === currentSlide ? styles.active : ''}`}
+              onClick={() => setCurrentSlide(index)}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
