@@ -5,66 +5,74 @@ import NewsCard from '../NewsCard/NewsCard';
 
 function FeaturedNews() {
   const { news, loading, error } = useNews();
-  // State to track the current slide index.
   const [currentSlide, setCurrentSlide] = useState(0);
-  // State to control whether the transition should be animated.
-  const [transitionEnabled, setTransitionEnabled] = useState(true);
-  // Refs for the interval and the carousel track.
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef(null);
-  const trackRef = useRef(null);
 
-  // Map the news items to only the properties needed.
-  const featuredNews = news.map(item => ({
-    category: item.category,
-    image: item.image,
-    excerpt: item.excerpt,
-  }));
-
-  // Create a slides array by appending a clone of the first slide.
-  const slides = featuredNews.length > 0 ? [...featuredNews, featuredNews[0]] : [];
-
-  // Function to advance to the next slide.
-  const nextSlide = () => {
-    setCurrentSlide(prev => prev + 1);
-  };
-
-  // Start the automatic carousel interval.
-  useEffect(() => {
-    if (slides.length > 0) {
-      intervalRef.current = setInterval(() => {
-        nextSlide();
-      }, 3000);
+  // Map news and add duplicate of first item at the end
+  const featuredNews = [
+    ...news.map(item => ({
+      category: item.category,
+      image: item.image,
+      excerpt: item.excerpt,
+    })),
+    // Add first item again at the end
+    news[0] && {
+      category: news[0].category,
+      image: news[0].image,
+      excerpt: news[0].excerpt,
     }
-    // Clean up the interval on component unmount.
-    return () => clearInterval(intervalRef.current);
-  }, [slides.length]);
+  ].filter(Boolean); // Remove undefined if news is empty
 
-  // This handler is triggered at the end of the CSS transition.
-  // When the currentSlide index reaches the cloned slide (last in the array),
-  // we disable the transition and immediately jump back to the first slide.
-  const handleTransitionEnd = () => {
-    if (currentSlide === slides.length - 1) {
-      // Temporarily disable the CSS transition.
-      setTransitionEnabled(false);
-      // Reset to the original first slide.
-      setCurrentSlide(0);
+  const handleSlideChange = (next) => {
+    setIsTransitioning(true);
+    setCurrentSlide(next);
+
+    // If we're on the last slide (duplicate), quickly reset to first after transition
+    if (next === featuredNews.length - 1) {
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentSlide(0);
+      }, 500); // Match this with your transition duration
+    } else {
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 500);
     }
   };
 
-  // Re-enable the CSS transition after a short delay once the jump has been made.
+  const startInterval = () => {
+    intervalRef.current = setInterval(() => {
+      const nextSlide = (currentSlide + 1) % featuredNews.length;
+      handleSlideChange(nextSlide);
+    }, 3000);
+  };
+
+  const stopInterval = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+
   useEffect(() => {
-    if (!transitionEnabled) {
-      // A small timeout ensures the jump is applied immediately without animation.
-      const timeoutId = setTimeout(() => {
-        setTransitionEnabled(true);
-      }, 50);
-      return () => clearTimeout(timeoutId);
+    if (featuredNews.length > 0) {
+      startInterval();
     }
-  }, [transitionEnabled]);
+    return () => stopInterval();
+  }, [featuredNews.length]);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    stopInterval();
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    startInterval();
+  };
 
   if (loading) return <p>Loading news...</p>;
   if (error) return <p>Error: {error.message}</p>;
-  if (slides.length === 0) return <p>No news available.</p>;
+  if (featuredNews.length === 0) return <p>No news available.</p>;
 
   return (
     <section className={styles.newsSection}>
@@ -75,21 +83,24 @@ function FeaturedNews() {
             Stay updated with the latest from our community
           </p>
         </div>
-
+        
         <div className={styles.carousel}>
-          <div
-            ref={trackRef}
+          <div 
             className={styles.carouselTrack}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             style={{
-              // Use negative translation based on currentSlide.
-              transform: `translateX(-${currentSlide * 100}%)`,
-              // Apply or remove the transition for smooth animation.
-              transition: transitionEnabled ? 'transform 0.5s ease' : 'none'
+              transition: isTransitioning ? 'transform 0.5s ease' : 'none'
             }}
-            onTransitionEnd={handleTransitionEnd}
           >
-            {slides.map((item, index) => (
-              <div key={index} className={styles.carouselSlide}>
+            {featuredNews.map((item, index) => (
+              <div
+                key={index}
+                className={styles.carouselSlide}
+                style={{
+                  transform: `translateX(${(index - currentSlide) * 100}%)`,
+                }}
+              >
                 <NewsCard {...item} />
               </div>
             ))}
@@ -97,19 +108,12 @@ function FeaturedNews() {
         </div>
 
         <div className={styles.indicators}>
-          {featuredNews.map((_, index) => (
+          {/* Only show indicators for original slides (exclude duplicate) */}
+          {featuredNews.slice(0, -1).map((_, index) => (
             <button
               key={index}
-              // Highlight the active indicator.
-              className={`${styles.indicator} ${
-                // If currentSlide points to the cloned slide, highlight the first indicator.
-                index === (currentSlide === slides.length - 1 ? 0 : currentSlide)
-                  ? styles.active
-                  : ''
-              }`}
-              onClick={() => {
-                setCurrentSlide(index);
-              }}
+              className={`${styles.indicator} ${index === currentSlide ? styles.active : ''}`}
+              onClick={() => handleSlideChange(index)}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
