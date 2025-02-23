@@ -1,7 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import styles from './FeaturedNews.module.css';
 import useNews from '../../hooks/useNews';
 import NewsCard from '../NewsCard/NewsCard';
+
+// Helper function to shuffle an array using Fisher-Yates algorithm
+function shuffleArray(array) {
+  const shuffled = array.slice(); // Create a shallow copy
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 function FeaturedNews() {
   const { news, loading, error } = useNews();
@@ -9,19 +19,27 @@ function FeaturedNews() {
   const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef(null);
 
-  // Map news to include only necessary properties.
-  const featuredNews = news.map(item => ({
-    category: item.category,
-    image: item.image,
-    excerpt: item.excerpt,
-  }));
+  // Compute six random featured news items when the news data changes.
+  const featuredNews = useMemo(() => {
+    if (!news || news.length === 0) return [];
+    // Shuffle the fetched news and take the first six items.
+    const selectedNews = shuffleArray(news).slice(0, 6);
+    // Map to include only the necessary properties.
+    return selectedNews.map(item => ({
+      category: item.category,
+      image: item.image,
+      excerpt: item.excerpt,
+    }));
+  }, [news]);
 
+  // Starts the carousel auto-slide interval.
   const startInterval = () => {
     intervalRef.current = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % featuredNews.length);
     }, 3000);
   };
 
+  // Clears the carousel auto-slide interval.
   const stopInterval = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
   };
