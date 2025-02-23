@@ -144,12 +144,42 @@
 
 @media (max-width: var(--breakpoint-sm)) {
   .logosGrid {
-    grid-template-columns: 1fr;
+    display: none;
+  }
+
+  .carouselContainer {
+    display: block;
+  }
+
+  .partnerLogo {
+    flex: 0 0 200px;
+    margin: 0 var(--spacing-md);
   }
 }
 
 @media (max-width: 768px) {
   .title {
     font-size: 2rem;
+  }
+}
+
+.carouselContainer {
+  display: none;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.carouselTrack {
+  display: flex;
+  animation: scroll 20s linear infinite;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
   }
 }

@@ -24,6 +24,9 @@ function ProudPartners() {
   // Use the custom hook to fetch partners data
   const { partners, loading, error } = usePartners();
 
+  // Duplicate partners array for infinite scroll effect
+  const duplicatedPartners = partners ? [...partners, ...partners] : [];
+
   return (
     <section className={styles.partnersSection}>
       <div className={styles.container}>
@@ -38,10 +41,20 @@ function ProudPartners() {
         {loading && <p>Loading partners...</p>}
         {error && <p>Error: {error.message}</p>}
         
+        {/* Grid view for desktop */}
         <div className={styles.logosGrid}>
           {!loading && !error && partners.map((partner, index) => (
-            <PartnerLogo key={index} {...partner} />
+            <PartnerLogo key={`grid-${index}`} {...partner} />
           ))}
+        </div>
+
+        {/* Carousel view for mobile */}
+        <div className={styles.carouselContainer}>
+          <div className={styles.carouselTrack}>
+            {!loading && !error && duplicatedPartners.map((partner, index) => (
+              <PartnerLogo key={`carousel-${index}`} {...partner} />
+            ))}
+          </div>
         </div>
 
         <div className={styles.cta}>
