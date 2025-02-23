@@ -39,9 +39,12 @@ class ImpactMetricListAPIView(viewsets.ReadOnlyModelViewSet):
 
 # Create API view for contact submissions.
 # This endpoint is POST-only and prevents any editing via the API.
-class ContactSubmissionCreateAPIView(mixins.CreateModelMixin,
-                                     viewsets.GenericViewSet):
-    # queryset = ContactSubmission.objects.all()
+class ContactSubmissionCreateAPIView(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    """
+    POST-only endpoint to handle contact submissions.
+    It sends the sender’s message to the admin and then sends an acknowledgment email from a noreply address.
+    """
+    # queryset = ContactSubmission.objects.all()  # Uncomment and set your queryset if needed.
     permission_classes = [permissions.AllowAny]
     serializer_class = ContactSubmissionSerializer
 
@@ -52,23 +55,47 @@ class ContactSubmissionCreateAPIView(mixins.CreateModelMixin,
         return Response({'detail': 'Your message has been sent.'}, status=status.HTTP_201_CREATED)
     
     def perform_create(self, serializer):
-        # Extract the validated data from the serializer.
         data = serializer.validated_data
         subject = data.get('subject', 'No Subject')
         sender_email = data.get('email')
-        # Compose the message body.
+        name = data.get('name')
+        # Compose the email message for the admin.
         message = (
-            f"Name: {data.get('name')}\n"
+            f"Name: {name}\n"
             f"Email: {sender_email}\n"
             f"Message:\n{data.get('message')}"
         )
         recipient_list = [settings.EMAIL_HOST_USER]
         
-        # Send the email. This will use your email settings.
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=sender_email,  # Using the sender's email as the from address.
-            recipient_list=recipient_list,
-            fail_silently=False  # Set to True in production if you don't want errors raised.
+        # Send the email to the admin using the sender’s email as the from address.
+        try:
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=sender_email,
+                recipient_list=recipient_list,
+                fail_silently=False
+            )
+        except Exception as e:
+            raise e
+
+        # Compose the acknowledgment email to the sender.
+        ack_subject = "Thank you for contacting us!"
+        ack_message = (
+            f"Dear {name},\n\n"
+            "Thank you for reaching out. We have received your message and our team will get back to you as soon as possible. "
+            "If you have any further questions, please feel free to reply to this email.\n\n"
+            "Best regards,\nThe Team"
         )
+        noreply_email = getattr(settings, "NOREPLY_EMAIL", "noreply@example.com")
+        try:
+            send_mail(
+                subject=ack_subject,
+                message=ack_message,
+                from_email=noreply_email,
+                recipient_list=[sender_email],
+                fail_silently=False
+            )
+        except Exception as ack_e:
+            # Optionally log the error.
+            pass

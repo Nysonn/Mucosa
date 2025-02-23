@@ -1,4 +1,4 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import AllowAny
 from .models import Project, Category
@@ -6,7 +6,6 @@ from .serializers import ProjectSerializer, CategorySerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from django.core.mail import EmailMessage
 from django.conf import settings
 
@@ -49,8 +48,11 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
 class ProjectSubmissionEmailView(APIView):
     """
-    Accepts project submission data and sends it as an email.
-    Expects a POST request with form-data including:
+    Accepts project submission data and sends it as two emails:
+      1. An email to the administrator containing the full submission details.
+      2. An acknowledgment email back to the sender from the noreply address.
+      
+    Expected form-data includes:
       - title
       - studentName
       - email
@@ -85,9 +87,8 @@ class ProjectSubmissionEmailView(APIView):
             f"Description: {description}\n"
         )
 
-        # Use settings for email addresses if available, otherwise hardcode defaults.
+        # Use settings to determine from/to email addresses.
         from_email = getattr(settings, "DEFAULT_FROM_EMAIL", settings.EMAIL_HOST_USER)
-        # Set the recipient email address – you might configure this in your settings.
         to_email = [getattr(settings, "PROJECT_SUBMISSION_EMAIL", settings.EMAIL_HOST_USER)]
 
         email_message = EmailMessage(
@@ -97,12 +98,34 @@ class ProjectSubmissionEmailView(APIView):
             to=to_email,
         )
 
-        # Attach image if provided
+ # Attach image if provided.
         if image:
             email_message.attach(image.name, image.read(), image.content_type)
 
         try:
             email_message.send()
-            return Response({"message": "Project submitted successfully!"}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # Compose the acknowledgment email to the sender.
+        ack_subject = "Thank you for your project submission!"
+        ack_body = (
+            f"Dear {student_name},\n\n"
+            f"Thank you for submitting your project titled '{title}'. We have received your submission and our team "
+            "will review it shortly. If we need any further information, we will contact you using this email address.\n\n"
+            "Best regards,\nThe Team"
+        )
+        noreply_email = getattr(settings, "NOREPLY_EMAIL", "amwineliambolt@gmail.com")
+        ack_email = EmailMessage(
+            subject=ack_subject,
+            body=ack_body,
+            from_email=noreply_email,
+            to=[sender_email],
+        )
+        try:
+            ack_email.send()
+        except Exception as ack_e:
+            # Optionally log the error; do not interrupt the flow for the user.
+            pass
+
+        return Response({"message": "Project submitted successfully!"}, status=status.HTTP_201_CREATED)
