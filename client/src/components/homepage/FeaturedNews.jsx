@@ -44,7 +44,10 @@ function FeaturedNews() {
 
   const startInterval = () => {
     intervalRef.current = setInterval(() => {
-      const nextSlide = (currentSlide + 1) % featuredNews.length;
+      // Only go up to the last non-duplicate slide
+      const nextSlide = currentSlide >= featuredNews.length - 2 
+        ? 0 
+        : currentSlide + 1;
       handleSlideChange(nextSlide);
     }, 3000);
   };
