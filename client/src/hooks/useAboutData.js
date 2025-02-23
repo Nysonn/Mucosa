@@ -1,89 +1,60 @@
-import { useState, useEffect } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 /**
- * Hook to fetch team members data from the backend.
+ * Hook to fetch team members data from the backend using TanStack Query.
  */
 export function useTeamMembers() {
-  const [teamMembers, setTeamMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch('http://localhost:8000/about/team')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch team members');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setTeamMembers(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err);
-        setLoading(false);
-      });
-  }, []);
+  const {
+    data: teamMembers,
+    isLoading: loading,
+    error,
+  } = useQuery(['teamMembers'], async () => {
+    const response = await fetch('http://localhost:8000/about/team');
+    if (!response.ok) {
+      throw new Error('Failed to fetch team members');
+    }
+    return response.json();
+  });
 
   return { teamMembers, loading, error };
 }
 
 /**
- * Hook to fetch impact metrics data from the backend.
+ * Hook to fetch impact metrics data from the backend using TanStack Query.
  */
 export function useImpactMetrics() {
-    const [impactMetrics, setImpactMetrics] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-  
-    useEffect(() => {
-      fetch('http://localhost:8000/about/impact')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to fetch impact metrics');
-          }
-          return response.json();
-        })
-        .then(data => {
-          setImpactMetrics(data);
-          setLoading(false);
-        })
-        .catch(err => {
-          setError(err);
-          setLoading(false);
-        });
-    }, []);
-  
-    return { impactMetrics, loading, error };
-  }  
+  const {
+    data: impactMetrics,
+    isLoading: loading,
+    error,
+  } = useQuery(['impactMetrics'], async () => {
+    const response = await fetch('http://localhost:8000/about/impact');
+    if (!response.ok) {
+      throw new Error('Failed to fetch impact metrics');
+    }
+    return response.json();
+  });
+
+  return { impactMetrics, loading, error };
+}
 
 /**
- * Hook to handle contact form submissions.
+ * Hook to handle contact form submissions using TanStack Query's useMutation.
  */
 export function useContactForm() {
-  const [status, setStatus] = useState('');
-
-  const submitForm = async (formData) => {
-    setStatus('sending');
-    try {
-      const response = await fetch('http://localhost:8000/about/contact/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to send message');
-      }
-
-      setStatus('success');
-    } catch (err) {
-      setStatus('error');
+  const mutation = useMutation(async (formData) => {
+    const response = await fetch('http://localhost:8000/about/contact/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+    if (!response.ok) {
+      throw new Error('Failed to send message');
     }
-  };
+    return response.json();
+  });
 
-  return { status, submitForm };
+  return { status: mutation.status, submitForm: mutation.mutate };
 }
