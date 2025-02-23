@@ -19,6 +19,14 @@ class NewsArticleForm(forms.ModelForm):
             'title', 'slug', 'excerpt', 'content', 'category',
             'published_date', 'image', 'author_name', 'author_avatar'
         ]
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # If editing an existing instance and it has an author,
+        # set the initial values for the custom author fields.
+        if self.instance and self.instance.pk and self.instance.author:
+            self.fields['author_name'].initial = self.instance.author.name
+            self.fields['author_avatar'].initial = self.instance.author.avatar
 
     def clean_title(self):
         title = self.cleaned_data['title']
