@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './NewsPage.module.css';
-import PrimaryButton from '../components/Buttons/PrimaryButton';
+// import PrimaryButton from '../components/Buttons/PrimaryButton';
 import useNews from '../hooks/useNews';
 import { highlightText } from '../utils/highlightText';
 import NewsFilter from '../components/NewsFilter/NewsFilter';
