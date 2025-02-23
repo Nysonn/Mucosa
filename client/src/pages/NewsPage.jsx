@@ -106,11 +106,11 @@ function NewsPage() {
         </div>
 
         {/* Load More Button */}
-        {news.length > 0 && (
+        {/* {news.length > 0 && (
           <div className={styles.loadMore}>
             <PrimaryButton>Load More Articles</PrimaryButton>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
