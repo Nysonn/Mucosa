@@ -30,7 +30,6 @@ function ContactForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Use await with mutateAsync so that status updates to 'loading' properly.
     await submitForm(formData);
   };
 
@@ -78,9 +77,9 @@ function ContactForm() {
       </div>
       <PrimaryButton 
           type="submit" 
-          disabled={status === 'loading'}
+          disabled={status === 'sending'}
       >
-          {status === 'loading' ? 'Sending...' : 'Send Message'}
+          {status === 'sending' ? 'Sending...' : 'Send Message'}
       </PrimaryButton>
       
       {showMessage && status === 'success' && (

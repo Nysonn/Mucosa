@@ -1,4 +1,5 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 
 /**
  * Hook to fetch team members data from the backend using TanStack Query.
@@ -66,23 +67,32 @@ export function useImpactMetrics() {
  */
 
 export function useContactForm() {
-  const mutation = useMutation({
-    mutationFn: async (formData) => {
+  const [status, setStatus] = useState('');
+
+  const submitForm = async (formData) => {
+    setStatus('sending');
+    try {
       const response = await fetch('http://localhost:8000/about/contact/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData)
       });
+
       if (!response.ok) {
         throw new Error('Failed to send message');
       }
-      return response.json();
-    },
-  });
 
-  // Use mutateAsync so we can await it and correctly update the status.
-  return { status: mutation.status, submitForm: mutation.mutateAsync };
+      const data = await response.json();
+      setStatus('success');
+      return data;
+    } catch (error) {
+      setStatus('error');
+      return null;
+    }
+  };
+
+  return { status, submitForm };
 }
 
