@@ -10,30 +10,31 @@ function FeaturedNews() {
   const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef(null);
 
-  // Map news and add duplicate of first item at the end for smooth looping
+  // Map news and add duplicate of first item at the end
   const featuredNews = [
     ...news.map(item => ({
       category: item.category,
       image: item.image,
       excerpt: item.excerpt,
     })),
+    // Add first item again at the end
     news[0] && {
       category: news[0].category,
       image: news[0].image,
       excerpt: news[0].excerpt,
     }
-  ].filter(Boolean);
+  ].filter(Boolean); // Remove undefined if news is empty
 
   const handleSlideChange = (next) => {
     setIsTransitioning(true);
     setCurrentSlide(next);
 
-    // If moving to the duplicate slide, reset to the first slide after transition.
+    // If we're on the last slide (duplicate), quickly reset to first after transition
     if (next === featuredNews.length - 1) {
       setTimeout(() => {
         setIsTransitioning(false);
         setCurrentSlide(0);
-      }, 500); // Match transition duration.
+      }, 500); // Match this with your transition duration
     } else {
       setTimeout(() => {
         setIsTransitioning(false);
@@ -42,27 +43,9 @@ function FeaturedNews() {
   };
 
   const startInterval = () => {
+    stopInterval(); // Clear any existing interval first
     intervalRef.current = setInterval(() => {
-      // Use functional update to always get the latest state.
-      setCurrentSlide(prevSlide => {
-        let nextSlide;
-        if (prevSlide === featuredNews.length - 2) {
-          // Move to duplicate slide.
-          nextSlide = featuredNews.length - 1;
-        } else if (prevSlide === featuredNews.length - 1) {
-          // Safety fallback: reset to start.
-          nextSlide = 0;
-        } else {
-          nextSlide = prevSlide + 1;
-        }
-        // Trigger transition effect.
-        setIsTransitioning(true);
-        // Clear transition state after duration.
-        setTimeout(() => {
-          setIsTransitioning(false);
-        }, 500);
-        return nextSlide;
-      });
+      handleSlideChange(currentSlide + 1);
     }, 3000);
   };
 
@@ -71,7 +54,7 @@ function FeaturedNews() {
   };
 
   useEffect(() => {
-    if (featuredNews.length > 0) {
+    if (featuredNews.length > 0 && !isHovered) {
       startInterval();
     }
     return () => stopInterval();
@@ -107,14 +90,16 @@ function FeaturedNews() {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             style={{
-              transition: isTransitioning ? 'transform 0.5s ease' : 'none',
-              transform: `translateX(${ -currentSlide * 100 }%)`
+              transition: isTransitioning ? 'transform 0.5s ease' : 'none'
             }}
           >
             {featuredNews.map((item, index) => (
               <div
                 key={index}
                 className={styles.carouselSlide}
+                style={{
+                  transform: `translateX(${(index - currentSlide) * 100}%)`,
+                }}
               >
                 <NewsCard {...item} />
               </div>
@@ -123,16 +108,11 @@ function FeaturedNews() {
         </div>
 
         <div className={styles.indicators}>
-          {/* Only show indicators for the original slides (exclude duplicate) */}
+          {/* Only show indicators for original slides (exclude duplicate) */}
           {featuredNews.slice(0, -1).map((_, index) => (
             <button
               key={index}
-              className={`${styles.indicator} ${
-                index === currentSlide || 
-                (currentSlide === featuredNews.length - 1 && index === 0)
-                  ? styles.active
-                  : ''
-              }`}
+              className={`${styles.indicator} ${index === currentSlide ? styles.active : ''}`}
               onClick={() => handleSlideChange(index)}
               aria-label={`Go to slide ${index + 1}`}
             />
