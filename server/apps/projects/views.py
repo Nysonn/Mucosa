@@ -115,7 +115,7 @@ class ProjectSubmissionEmailView(APIView):
             "will review it shortly. If we need any further information, we will contact you using this email address.\n\n"
             "Best regards,\nThe Team"
         )
-        noreply_email = getattr(settings, "NOREPLY_EMAIL", "amwineliambolt@gmail.com")
+        noreply_email = getattr(settings, "NOREPLY_EMAIL", settings.EMAIL_HOST_USER)
         ack_email = EmailMessage(
             subject=ack_subject,
             body=ack_body,
