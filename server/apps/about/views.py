@@ -87,7 +87,7 @@ class ContactSubmissionCreateAPIView(mixins.CreateModelMixin, viewsets.GenericVi
             "If you have any further questions, please feel free to reply to this email.\n\n"
             "Best regards,\nThe Team"
         )
-        noreply_email = getattr(settings, "NOREPLY_EMAIL", "noreply@example.com")
+        noreply_email = getattr(settings, "NOREPLY_EMAIL", settings.EMAIL_HOST_USER)
         try:
             send_mail(
                 subject=ack_subject,
