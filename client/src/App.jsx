@@ -16,6 +16,7 @@ const CareerPage = lazy(() => import("./pages/CareerPage"));
 const ProjectPage = lazy(() => import("./pages/ProjectsPage"));
 const NewsDetailPage = lazy(() => import("./pages/NewsDetailPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
+const FCIConnect = lazy(() => import("./pages/FCIConnectPage"));
 const ErrorPage = lazy(() => import("./components/common/Error"));
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/projects" element={<ProjectPage />} />
                 <Route path="/news/:newsTitle" element={<NewsDetailPage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="fci-connect" element={<FCIConnect />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </main>

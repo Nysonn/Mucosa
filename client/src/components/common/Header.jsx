@@ -70,6 +70,7 @@ function Header() {
             <Link to="/projects" className={location.pathname === '/projects' ? styles.active : ''}>Projects</Link>
             <Link to="/career" className={location.pathname === '/career' ? styles.active : ''}>Career</Link>
             <Link to="/about" className={location.pathname === '/about' ? styles.active : ''}>About</Link>
+            <Link to="/fci-connect" className={location.pathname === '/fci-connect' ? styles.active : ''}>FCI Connect</Link>
           </nav>
         </div>
       </div>

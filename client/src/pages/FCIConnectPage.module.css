@@ -1,0 +1,422 @@
+/* Main container */
+.fciConnectPage {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Hero Section - Now using gradient instead of background image */
+.heroSection {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  margin-bottom: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  padding: 0 20px;
+}
+
+.pageTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 16px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pageDescription {
+  font-size: 1.2rem;
+  color: #ffffff;
+  max-width: 700px;
+  margin-bottom: 32px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.exploreButton {
+  padding: 12px 28px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid white;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.exploreButton:hover {
+  background-color: white;
+  color: #6a11cb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Section Titles */
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+}
+
+/* Quick Links Section */
+.quickLinksSection {
+  margin-bottom: 60px;
+  padding: 40px 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.linksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.linkItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.linkItem:hover {
+  background-color: #f5f9ff;
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.iconContainer {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ef 100%);
+  border-radius: 50%;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.linkItem:hover .iconContainer {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+}
+
+.icon {
+  font-size: 30px;
+  color: #6a11cb;
+  transition: all 0.3s ease;
+}
+
+.linkItem:hover .icon {
+  color: white;
+}
+
+.linkLabel {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Engagement Section */
+.engagementSection {
+  margin-bottom: 60px;
+  padding: 40px 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.featuresContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.featureCard {
+  padding: 25px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid #6a11cb;
+}
+
+.featureCard h3 {
+  font-size: 1.4rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.featureCard p {
+  color: #5d6778;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.featureButton {
+  display: inline-block;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.featureButton:hover {
+  background: linear-gradient(135deg, #5a0cb6 0%, #1565db 100%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Social Media Section */
+.socialSection {
+  margin-bottom: 60px;
+  padding: 40px 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.socialIcons {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.socialIcon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  border-radius: 50%;
+  font-size: 22px;
+  transition: all 0.3s ease;
+}
+
+.socialIcon:hover {
+  transform: translateY(-5px);
+  background: linear-gradient(135deg, #5a0cb6 0%, #1565db 100%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.finalCta {
+  margin-top: 30px;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ctaButton:hover {
+  background: linear-gradient(135deg, #5a0cb6 0%, #1565db 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pageTitle {
+    font-size: 2.2rem;
+  }
+  
+  .pageDescription {
+    font-size: 1rem;
+  }
+  
+  .linksGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .featuresContainer {
+    grid-template-columns: 1fr;
+  }
+  
+  .socialIcons {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroSection {
+    height: 350px;
+  }
+  
+  .linksGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .exploreButton,
+  .ctaButton {
+    padding: 10px 24px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Contact Section */
+.connectSection {
+  margin-bottom: 60px;
+  padding: 40px 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.contactOptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto 30px;
+}
+
+.contactCard {
+  padding: 25px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border-left: 4px solid #6a11cb;
+}
+
+.contactCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.contactCard h3 {
+  font-size: 1.4rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.contactCard p {
+  color: #5d6778;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.finalCta {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ctaButton:hover {
+  background: linear-gradient(135deg, #5a0cb6 0%, #1565db 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.secondaryCta {
+  display: inline-block;
+  padding: 14px 32px;
+  background: transparent;
+  color: #6a11cb;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 2px solid #6a11cb;
+  transition: all 0.3s ease;
+}
+
+.secondaryCta:hover {
+  background-color: rgba(106, 17, 203, 0.1);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .contactOptions {
+    grid-template-columns: 1fr;
+  }
+  
+  .finalCta {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .ctaButton, .secondaryCta {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+} 
